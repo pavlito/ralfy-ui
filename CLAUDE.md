@@ -109,6 +109,32 @@ import { Toggle } from '@/components/Toggle'
 ```
 Props: `checked`, `defaultChecked`, `onCheckedChange`, `disabled`, `label`, `id`
 
+### Dialog (Compound)
+```tsx
+import {
+  Dialog, DialogTrigger, DialogContent, DialogHeader,
+  DialogFooter, DialogTitle, DialogDescription, DialogClose,
+} from '@/components/Dialog'
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>Open</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Title</DialogTitle>
+      <DialogDescription>Description text.</DialogDescription>
+    </DialogHeader>
+    {/* content */}
+    <DialogFooter>
+      <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
+      <Button>Confirm</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+Sub-components: `Dialog` (Root), `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`
+
 ## Patterns
 
 ### Compound Components
@@ -128,6 +154,7 @@ Use Card's compound pattern for complex UI. Each sub-component works independent
 - Error states link to inputs via `aria-describedby`
 - Toggle uses `aria-checked` via Radix Switch
 - Avatar uses Radix Avatar for proper image loading/fallback
+- Dialog uses Radix Dialog with compound pattern, overlay, and close button
 
 ### Component Variants
 Use `cva` (class-variance-authority) for variant management:
@@ -146,10 +173,10 @@ import { cn } from '@/lib/cn'
 ## File Structure
 ```
 src/
-├── components/     # React components (Button/, Input/, Card/, Badge/, Avatar/, Toggle/)
+├── components/     # React components (Button/, Input/, Card/, Badge/, Avatar/, Toggle/, Dialog/)
 ├── tokens/         # Design tokens (tokens.css, colors.ts, spacing.ts, etc.)
 ├── lib/            # Utilities (cn.ts)
-├── examples/       # Example pages (DashboardPage, SettingsPage)
+├── test/           # Test setup
 └── index.ts        # Public API exports
 ```
 
@@ -160,6 +187,8 @@ src/
 - `pnpm test:run` — Vitest single run
 - `pnpm typecheck` — TypeScript check
 - `pnpm build` — Production build
+- `pnpm build-storybook` — Build Storybook static
+- `pnpm chromatic` — Deploy to Chromatic
 
 ## Rules
 - Never hardcode colors — use token classes

@@ -113,6 +113,56 @@ Need to check exact questions on Ashby form.
 
 ---
 
+## Architecture Decision: npm Package Workflow
+
+**Decision:** ralfy-ui ships as a standalone npm package with both components AND tokens (same approach as Kit's `@convertkit/design`).
+
+### Why
+- Matches Kit's architecture — demonstrates familiarity with their workflow
+- Single source of truth for components and tokens across all consumers
+- Production app imports from the package instead of maintaining local copies
+- Versioned releases give control over when production updates
+
+### Workflow
+
+```
+Figma (source of truth for design decisions)
+  ↓
+ralfy-ui/src/tokens/tokens.css (single source of truth in code)
+ralfy-ui/src/components/* (component implementations)
+  ↓
+Storybook (visual verification — matches Figma?)
+  ↓
+npm publish (versioned release)
+  ↓
+Ralfy production:
+  import 'ralfy-ui/tokens.css'
+  import { Button, Card, Badge } from 'ralfy-ui'
+```
+
+### Roles of Each Tool
+- **Figma:** Defines how things should look (colors, spacing, variants)
+- **tokens.css:** Translates Figma decisions into CSS variables
+- **Components:** React code that uses those CSS variables
+- **Storybook:** Visual mirror — verify components match Figma, nothing more
+- **npm:** Delivery mechanism — how production gets components and tokens
+
+### Remaining Steps
+- [ ] Publish ralfy-ui to npm
+- [ ] In Ralfy production: `pnpm add ralfy-ui`
+- [ ] Replace production local components with imports from ralfy-ui
+- [ ] Remove production `theme.css` (replaced by `ralfy-ui/tokens.css`)
+- [ ] Verify all pages render correctly with package imports
+
+### Color Workflow
+1. Designer updates color in Figma
+2. Engineer updates `ralfy-ui/src/tokens/tokens.css` to match
+3. Verify in Storybook (components automatically use new color)
+4. Publish new version
+5. Production updates package — all components get new color
+
+---
+
 ## Current Stats
 
 | Metric | Value |
