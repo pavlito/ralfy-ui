@@ -146,16 +146,10 @@ When you see these Figma components, map them to ralfy-ui:
 | Figma component | Import | Key props |
 |-----------------|--------|-----------|
 | Button | `import { Button } from '@/components/Button'` | `variant`, `size`, `loading`, `iconLeft`, `iconRight`, `asChild` |
-| Input | `import { Input } from '@/components/Input'` | `label`, `helperText`, `errorMessage`, `icon` |
-| Card | `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/Card'` | Card: `variant` |
-| Badge | `import { Badge } from '@/components/Badge'` | `variant`, `size` |
-| Avatar | `import { Avatar } from '@/components/Avatar'` | `src`, `alt`, `fallback`, `size`, `status` |
-| Toggle / Switch | `import { Toggle } from '@/components/Toggle'` | `checked`, `onCheckedChange`, `label` |
-| Dialog / Modal | `import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from '@/components/Dialog'` | Compound pattern |
 | Alert | `import { Alert, AlertTitle, AlertDescription } from '@/components/Alert'` | `variant`, `icon` |
+| Sidebar | `import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, ... } from '@/components/Sidebar'` | `side`, `collapsed` |
 | Tabs | `import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs'` | Radix-based compound |
 | TabItem | `import { TabItem } from '@/components/TabItem'` | `active`, `size` |
-| Sidebar | `import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, ... } from '@/components/Sidebar'` | `side`, `collapsed` |
 
 ### Component variant mappings
 
@@ -177,15 +171,6 @@ When you see these Figma components, map them to ralfy-ui:
 | Large (h=48px) | `"lg"` |
 | Icon only | `"icon"` |
 
-**Badge variants**:
-| Figma variant | Code `variant` prop |
-|---------------|-------------------|
-| Success / Green | `"success"` |
-| Warning / Yellow | `"warning"` |
-| Error / Red / Destructive | `"error"` |
-| Info / Blue | `"info"` |
-| Neutral / Default / Gray | `"neutral"` |
-
 **Alert variants**:
 | Figma variant | Code `variant` prop |
 |---------------|-------------------|
@@ -193,13 +178,6 @@ When you see these Figma components, map them to ralfy-ui:
 | Destructive / Error | `"destructive"` |
 | Warning | `"warning"` |
 | Success | `"success"` |
-
-**Card variants**:
-| Figma variant | Code `variant` prop |
-|---------------|-------------------|
-| Default / Filled | `"default"` |
-| Outlined / Bordered | `"outlined"` |
-| Elevated / Raised | `"elevated"` |
 
 ---
 
@@ -256,16 +234,23 @@ export { Component, componentVariants }
 
 ### Compound components
 
-For complex UI (Card, Dialog, Sidebar, Tabs), use compound pattern:
+For complex UI (Alert, Sidebar, Tabs), use compound pattern:
 ```tsx
-<Card>
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-    <CardDescription>Description</CardDescription>
-  </CardHeader>
-  <CardContent>Content</CardContent>
-  <CardFooter>Footer</CardFooter>
-</Card>
+<Sidebar>
+  <SidebarHeader>
+    <SidebarBrand title="App" />
+  </SidebarHeader>
+  <SidebarContent>
+    <SidebarGroup>
+      <SidebarGroupLabel>Section</SidebarGroupLabel>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton>Item</SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
+  </SidebarContent>
+</Sidebar>
 ```
 
 ### Radix UI primitives
@@ -274,9 +259,6 @@ Used for accessible interactive components:
 | Component | Radix package |
 |-----------|--------------|
 | Button (Slot) | `@radix-ui/react-slot` |
-| Avatar | `@radix-ui/react-avatar` |
-| Dialog | `@radix-ui/react-dialog` |
-| Toggle/Switch | `@radix-ui/react-switch` |
 | Tabs | `@radix-ui/react-tabs` |
 
 ---
@@ -314,17 +296,11 @@ No custom breakpoints — use standard Tailwind responsive prefixes (`sm:`, `md:
 ```
 src/
 ├── components/
-│   ├── Alert/          index.tsx, Alert.stories.tsx
-│   ├── Avatar/         index.tsx
-│   ├── Badge/          index.tsx
+│   ├── Alert/          index.tsx, Alert.stories.tsx, Alert.test.tsx
 │   ├── Button/         index.tsx, Button.stories.tsx, Button.test.tsx
-│   ├── Card/           index.tsx
-│   ├── Dialog/         index.tsx
-│   ├── Input/          index.tsx
-│   ├── Sidebar/        index.tsx, *.stories.tsx
-│   ├── TabItem/        index.tsx, TabItem.stories.tsx
-│   ├── Tabs/           index.tsx, Tabs.stories.tsx
-│   └── Toggle/         index.tsx
+│   ├── Sidebar/        index.tsx, *.stories.tsx, Sidebar.test.tsx
+│   ├── TabItem/        index.tsx, TabItem.stories.tsx, TabItem.test.tsx
+│   └── Tabs/           index.tsx, Tabs.stories.tsx, Tabs.test.tsx
 ├── tokens/
 │   ├── tokens.css          ← entry point (imports + @theme inline)
 │   ├── generated/          ← auto-generated (DO NOT edit)
@@ -387,7 +363,7 @@ src/
 
 When translating a Figma design to ralfy-ui code:
 
-1. **Check existing components first** — if the Figma design uses a Button, Card, Badge, etc., use the ralfy-ui component instead of recreating it
+1. **Check existing components first** — if the Figma design uses a Button, Alert, Sidebar, Tabs, or TabItem, use the ralfy-ui component instead of recreating it
 2. **Map Figma fills to token classes** — look up the color in the token tables above
 3. **Map Figma auto-layout to Tailwind flex** — `layoutMode: HORIZONTAL` → `flex`, `VERTICAL` → `flex flex-col`
 4. **Map Figma spacing to CSS vars** — `itemSpacing: 8` → `gap-[var(--spacing-sm)]`

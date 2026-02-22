@@ -2,193 +2,317 @@
 
 ## What I Built
 
-Ralfy is a LinkedIn feed management tool — custom feeds, AI-generated comments, reply drafts. I built the entire product solo: React frontend, Express backend, and a Chrome extension that injects UI directly into LinkedIn's pages.
+Ralfy is a LinkedIn feed management tool. Custom feeds, AI-generated comments, reply drafts. I built the whole thing solo: React frontend, Express backend, Chrome extension.
 
-As the product grew, I kept duplicating color values, spacing, and component patterns across three separate rendering surfaces. Ralfy-UI is the design system I extracted to fix that.
+As the product grew, I kept copy-pasting colors and components across three different codebases. Ralfy-UI is the design system I extracted to fix that.
 
-**Live Storybook:** [Browse on Chromatic](https://69983a8349303a08fb1562fd-kyvjhcchqd.chromatic.com/)
-**Source:** [github.com/pavlito/ralfy-ui](https://github.com/pavlito/ralfy-ui)
-
----
-
-## From Organic Growth to System: The Retrofitting Process
-
-Ralfy wasn't built with a design system. It was built feature by feature — a button here, a card there, colors picked per-component. The Chrome extension duplicated styles from the frontend. When I changed the primary color in the app, the extension still used the old one.
-
-The extraction process:
-
-1. **Audit.** I cataloged every color value, spacing unit, and component pattern across the frontend and extension. The frontend had 12 unique grays. The extension had 8, and only 4 matched.
-
-2. **Identify patterns.** Most components fell into six categories: Button, Input, Card, Badge, Avatar, Toggle. Everything else was a composition of these.
-
-3. **Extract tokens first.** Before touching components, I defined the token layer — one source of truth for color, spacing, and typography. This was the constraint that made everything else possible.
-
-4. **Extract components.** Each production component was rebuilt against the token system, tested, and documented. The old components stayed in place until the new ones were verified.
-
-5. **Validate across surfaces.** Every token and component was tested in all three rendering contexts — React app, Shadow DOM, inline styles — before the old code was removed.
-
-This isn't a greenfield design system. It's a system extracted from a live product, which is a fundamentally different (and harder) problem.
+[Storybook](https://6999e35613453c9b648d640e-iwtddknqko.chromatic.com/) | [GitHub](https://github.com/pavlito/ralfy-ui)
 
 ---
 
-## The Hard Problem: Three Surfaces, One Visual Language
+## How It Works
 
-Most design systems target one rendering context. Ralfy has three, and each has different constraints:
+One pipeline connects Figma to production. A token changes in Figma, and it flows all the way to the live app without touching any component code.
 
-**1. Frontend App** — Standard React + Tailwind. Components use `bg-primary`, `text-muted-foreground`. Normal developer experience.
+> `[gif: the full pipeline in action, token change in Figma flowing to Storybook]`
 
-**2. Chrome Extension (Shadow DOM)** — The AI comment generator lives inside a Shadow Root injected into LinkedIn's page. Same Tailwind tokens, but isolated from LinkedIn's stylesheets via `:host` scoping. CSS variables are redeclared inside the shadow boundary.
+```
+Figma  →  Tokens Studio  →  tokens.json  →  Style Dictionary  →  CSS  →  Tailwind  →  Components  →  Storybook  →  npm  →  Production
+```
 
-**3. Chrome Extension (Inline Styles)** — LinkedIn actively overwrites injected CSS classes. The feed manager button survives by using `style={{}}` props with a JS token object. Highest specificity wins.
-
-The design system had to serve all three. One set of token values, three delivery mechanisms. Changing `--primary` in `tokens.css` propagates to Tailwind classes in the app, CSS variables in the Shadow DOM, and JS token objects in the inline-styled components.
-
-This constraint shaped every architectural decision.
+That's the whole system. Everything else in this case study is about how each step works and why it's set up this way.
 
 ---
 
-## Token Architecture
+## The Problem: Three Surfaces, One Design
 
-### Two Tiers, Not Three
+Most design systems serve one app. Ralfy has three rendering contexts, and each one fights you differently.
 
-Primitive tokens (`--blue-500`, `--gray-900`) define raw OKLch values. Semantic tokens (`--primary`, `--destructive`) assign roles. Components only reference semantic tokens.
+**The App.** Standard React + Tailwind. Components use token classes like `bg-background-primary-default`. Normal stuff.
 
-I evaluated a third tier (component-level tokens like `--button-bg`) and dropped it. Six components don't justify the indirection. If Ralfy grew to 30+ components, I'd revisit — but shipping unnecessary abstraction layers early creates maintenance cost with no users to benefit from it.
+**Chrome Extension (Shadow DOM).** The AI comment generator lives inside a Shadow Root injected into LinkedIn. Same tokens, but isolated from LinkedIn's CSS.
+
+**Chrome Extension (Inline Styles).** LinkedIn actively overwrites injected classes. The only way to survive is `style={{}}` with JS token values. Highest specificity wins.
+
+> `[gif: same component rendering correctly across all three surfaces]`
+
+One set of token values powers all three. Change `--background-primary-default` once, and it updates the Tailwind class in the app, the CSS variable in Shadow DOM, and the JS object in the inline-styled component.
+
+---
+
+## Extracting the System
+
+Ralfy wasn't built with a design system. I retrofitted one from a live product.
+
+Both codebases had hardcoded hex colors scattered everywhere. Grays that looked the same but weren't. Changes in one codebase didn't propagate to the other.
+
+Here's what the extraction looked like:
+
+1. Audited every color, spacing value, and component pattern across both codebases
+2. Grouped components into categories: Button, Input, Card, Badge, Avatar, Toggle, Dialog
+3. Defined the token layer first. One source of truth for color, spacing, typography
+4. Rebuilt each component against the token system
+5. Connected it all to Figma via Tokens Studio
+
+> `[gif: before/after comparison, hardcoded colors vs token classes]`
+
+This is not a greenfield design system. Extracting from a live product is a fundamentally different problem, because you can't break what's already working.
+
+---
+
+## Tokens
+
+### Two Tiers
+
+Primitives are raw colors:
+```css
+--zinc-900: oklch(0.274 0.006 286.033);
+--red-600: oklch(0.577 0.245 27.325);
+```
+
+Semantic tokens give them meaning:
+```css
+--background-primary-default: var(--primary-900);
+--foreground-default: var(--zinc-950);
+```
+
+Components only use semantic tokens. Never primitives directly.
+
+> `[gif: Tokens Studio in Figma showing primitive → semantic reference chain]`
+
+### Figma Names = Tailwind Classes
+
+Tailwind's `@theme inline` registers tokens as utilities. The names match Figma exactly:
+
+```
+Figma: background/primary/default  →  Tailwind: bg-background-primary-default
+Figma: foreground/default          →  Tailwind: text-foreground-default
+Figma: border/default              →  Tailwind: border-border-default
+```
+
+No alias layer. No translation table to maintain. Slashes become hyphens, that's it.
+
+### Dark Mode
+
+Light tokens live in `:root`. Dark tokens live in `.dark`. Components never branch on mode. `bg-background-primary-default` resolves to the right color automatically.
+
+> `[gif: toggling dark mode in Storybook, all components switching together]`
 
 ### Why OKLch
 
-Tailwind v4 uses OKLch by default, and I kept it for three reasons:
-
-1. **Dark mode is predictable.** Lightness is an independent axis in OKLch. Adjusting light/dark values means changing `L` without color drift. In HSL, reducing lightness shifts the perceived hue — grays turn blue, yellows turn green. OKLch avoids this entirely.
-
-2. **Perceptual uniformity.** A 10-step gray ramp in OKLch looks evenly spaced to the eye. In HSL it doesn't. This eliminates the "this shade looks off" back-and-forth between design and engineering.
-
-3. **Zero conversion.** Tailwind v4's `@theme inline` maps CSS custom properties to utility classes natively. OKLch values pass through without transformation.
-
-The trade-off: OKLch is unfamiliar to most designers. Figma doesn't support it natively — only hex, RGB, and HSL. Designers would need a conversion step or plugin. For a solo project this didn't matter; for a team at Kit's scale, I'd provide hex equivalents in the documentation alongside OKLch source values.
-
-### Light/Dark Mode
-
-One set of CSS custom properties under `:root` (light) and `.dark` (dark). Components never branch on mode — `bg-primary` resolves to the correct value based on which class is on `<html>`. Toggle the class, everything updates. No component code changes, no conditional rendering.
+Tailwind v4 uses OKLch by default. Lightness is an independent axis, so dark mode adjustments don't cause color drift. A 10-step gray ramp looks evenly spaced to the eye. And OKLch values pass through Tailwind without conversion.
 
 ---
 
-## Design Fundamentals
+## Figma Integration
 
-A token system is only useful if the values it encodes are deliberate. These are the design decisions baked into Ralfy-UI's tokens.
+### Token Pipeline
 
-### Spacing Scale
+The Figma file has three token sets in Tokens Studio:
 
-4px base unit, doubling at key breakpoints: 4, 8, 12, 16, 24, 32, 48, 64. Every margin, padding, and gap references this scale. The constraint prevents "just add 3px" fixes that erode visual rhythm over time.
+```
+Primitives    →  raw color palettes (zinc, red, emerald, primary)
+Tokens/Light  →  semantic tokens for light mode
+Tokens/Dark   →  semantic tokens for dark mode
+```
 
-Component internals follow the same scale — Button padding is `px-4 py-2` (16px/8px), Card padding is `py-6` (24px). The relationship between components stays proportional even as individual components change.
+Changing a primitive propagates to every semantic token that references it.
 
-### Typography Hierarchy
+> `[gif: changing a primitive in Tokens Studio, watching semantic tokens update]`
 
-Three variables per text role: size, weight, and line-height. Body text is `text-sm` (14px) at `font-normal`. Labels are `text-sm font-medium`. Headings step up through `text-lg`, `text-xl`, `text-2xl` with `font-semibold`.
+Export flow: Tokens Studio pushes `tokens.json` → `pnpm tokens:build` generates CSS → components use new values immediately.
 
-The hierarchy isn't decorative — it encodes information priority. A user scanning a Card sees the title first (larger, bolder), then the description (smaller, lighter), then the content. The system enforces this hierarchy across every instance, not per-component.
+### Building Components from Figma
 
-### Color as Communication
+I use Figma MCP to read designs directly and build components from them.
 
-Semantic color tokens encode meaning, not aesthetics:
+> `[gif: Figma MCP reading Button structure, showing extracted variants and tokens]`
 
-- `primary` = action (buttons, links — "click this")
-- `secondary` = supporting (less prominent actions — "or click this")
-- `muted` = de-emphasized (helper text, placeholders — "this is context")
-- `destructive` = danger (delete, error states — "this is irreversible")
-- `accent` = hover/focus feedback (interactive states — "you're interacting with this")
+The workflow:
 
-A designer choosing between `destructive` and `primary` for a button is making a communication decision, not a color decision. The system encodes that intent. If the brand's red changes, every destructive action updates. The meaning stays.
+1. Figma MCP extracts variants, sizes, states, and token references
+2. Figma variable names map 1:1 to Tailwind classes
+3. AI generates a React component with `cva` variants matching Figma
+4. Storybook's AllVariants story confirms visual parity with Figma
 
----
-
-## Component Decisions
-
-### What I Built
-
-| Component | Why This Pattern | Tests |
-|-----------|-----------------|-------|
-| **Button** | `asChild` via Radix Slot — renders as `<a>`, `<Link>`, or any element while keeping button styles. Six variants (`primary`, `destructive`, `outline`, `secondary`, `ghost`, `link`) and four sizes including `icon`. Eliminates the "ButtonLink" anti-pattern. | 18 |
-| **Input** | Native `<input>` with label, helper text, error state, and icon. `aria-describedby` links error messages to the input for screen readers. Dark mode gets `bg-input/30` for subtle depth. | 11 |
-| **Card** | Compound component — `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` compose independently. Three variants (`default`, `outlined`, `elevated`). Avoids the 15-prop god-component. | 11 |
-| **Badge** | Four variants: `default`, `secondary`, `destructive`, `outline`. Rounded rectangle with border. Meaning is encoded in the variant name — `destructive` is always the danger color, regardless of theme. | 8 |
-| **Avatar** | Radix Avatar handles image loading, error fallback, and initials rendering. Three sizes with online status indicator. Building this from scratch takes a week and still misses edge cases. | 9 |
-| **Toggle** | Radix Switch provides keyboard navigation, `aria-checked`, and focus management. A custom implementation would need extensive accessibility testing. | 8 |
-
-**65 unit tests** across components. Tests verify variant rendering, accessibility attributes, keyboard interaction, ref forwarding, and className merging. An additional **99 Storybook interaction tests** verify stories render correctly across 33 test files. **164 tests total.**
-
-### Patterns Used Everywhere
-
-- **`cva` (class-variance-authority)** — Variant logic is declarative. Adding a new Button variant is one line in the variants object, not a conditional chain. Variants are typed — TypeScript catches `variant="primry"` at compile time.
-- **`cn()` (clsx + tailwind-merge)** — Merges classNames and deduplicates conflicting Tailwind utilities. Users can override styles without `!important`.
-- **`React.forwardRef`** — Every component. Necessary for form libraries, animation tools, and tooltip positioning.
-
-### What I Didn't Build
-
-No navigation, no modals, no form validation, no data tables. These are the components Ralfy actually uses — I didn't pad the library with components I'd never tested in production. A design system earns trust by doing fewer things well, not by having a long component list.
+This is codified as a reusable skill (more on that below).
 
 ---
 
-## Storybook as Living Documentation
+## Components
 
-Storybook isn't an afterthought — it's the canonical reference for Ralfy-UI. It serves two audiences:
+Seven components, each extracted from production:
 
-**For designers:** Token documentation pages show every semantic color with its light/dark values, the full typography scale, and the spacing system. A designer can open Storybook and answer "what's our destructive color?" without asking an engineer.
+| Component | Key Decision |
+|-----------|-------------|
+| **Button** | `asChild` via Radix Slot. Renders as `<a>`, `<Link>`, or any element. No more "ButtonLink" components. |
+| **Input** | Label, helper text, error state, icon. `aria-describedby` links errors to inputs. |
+| **Card** | Compound pattern. Sub-components compose freely instead of one component with 15 props. |
+| **Badge** | Semantic variants: success, warning, error, info. Color communicates meaning. |
+| **Avatar** | Radix Avatar handles image loading, error fallback, initials. |
+| **Toggle** | Radix Switch. Keyboard nav, `aria-checked`, focus management built in. |
+| **Dialog** | Radix Dialog with compound pattern. Overlay, close button, accessible modal. |
 
-**For engineers:** Every component has stories for each variant, size, and state (loading, disabled, error). Composed page stories (Dashboard, Settings, Login) show how components combine in real layouts. An engineer can see exactly what `<Button variant="ghost" size="sm">` looks like before writing code.
+> `[gif: Storybook AllVariants story for Button showing all 6 variants × states]`
 
-**What's deployed:**
+Every component uses `cva` for variants, `cn()` for class merging, and `React.forwardRef`. Every component accepts a `className` prop for customization.
 
-- 94 stories across 33 files
-- Token architecture overview with interactive examples
-- Dark mode toggle to preview both themes
-- Deployed on Chromatic with a shareable URL — no local setup needed
-
-This is the same role Storybook would play at Kit, replacing React Styleguidist as the canonical component reference. The transition path is familiar: document what exists, make it browsable, make it the source of truth.
+I didn't build navigation, form validation, or data tables. These are the components Ralfy actually uses. A design system earns trust by doing fewer things well.
 
 ---
 
-## AI-Assisted Workflow
+## AI Workflow
 
-The project includes a `CLAUDE.md` file — a machine-readable specification that AI coding tools read before generating code. It lists every token class, component API, variant option, and accessibility requirement.
+### CLAUDE.md
 
-**Without CLAUDE.md**, AI generates plausible but non-compliant code:
+The project has a `CLAUDE.md` file that AI tools read before generating code. It lists every token class, every component API, every accessibility rule.
+
+Without it, AI generates this:
 ```tsx
 <button className="bg-[#1a1a2e] text-white px-4 py-2 rounded-md">Save</button>
 ```
 
-**With CLAUDE.md**, same prompt produces:
+With it, AI generates this:
 ```tsx
-<Button variant="primary" size="md">Save</Button>
+<Button variant="default" size="md">Save</Button>
 ```
 
-The difference isn't cosmetic. The first creates a maintenance liability — that hex value won't update with a brand change, won't swap in dark mode, and won't match adjacent components. The second inherits all of that for free.
+> `[gif: side by side, same prompt with and without CLAUDE.md]`
 
-This turns "design system compliance" from a manual review task into an automated toolchain capability. A new engineer describes what they need; the AI generates system-compliant code. The style guide review step disappears.
+The first version hardcodes colors that won't update with token changes. The second inherits dark mode, tokens, and accessibility for free.
+
+It's not just about component usage. CLAUDE.md catches things like `p-4` (arbitrary Tailwind) and steers toward `px-[var(--padding-sm)]` (token-linked). It catches `text-red-500` and steers toward `text-foreground-destructive-default`. It acts as an automated design review.
+
+### Custom Skills
+
+I built a set of Claude Code skills that encode the entire workflow into repeatable operations.
+
+**figma-to-component** reads a Figma design via MCP, maps every token to a Tailwind class, generates a React component with cva variants, creates Storybook stories, and verifies the build. One command for simple components like Badge or Toggle.
+
+> `[gif: running figma-to-component skill, Figma → finished Storybook story]`
+
+**build-component** is the more structured version for complex components. It runs in 5 phases: Figma Analysis, Architecture, Build Atom by Atom, Composition, Verification. Each phase has a user approval gate before proceeding. Used for Dialog, Sidebar, Tabs.
+
+**npm-publish** handles the full release: version bump, build, test, publish to npm, git tag, push to GitHub.
+
+**ralfy-testing** generates tests after code changes. Happy path, edge cases, error handling, validation. It follows the project's testing patterns automatically.
+
+Each skill encodes project conventions so the AI produces code that matches existing components. When I update conventions, the skills update too.
+
+### Example: Building Button from Figma
+
+Here's what the `figma-to-component` workflow actually looks like.
+
+> `[video: full screen recording of the Button rebuild process]`
+
+Figma MCP reads the component and extracts 6 variants, 4 sizes, and all token references.
+
+Tokens map mechanically:
+```
+background/primary/default        →  bg-background-primary-default
+background/primary/default-hover  →  hover:bg-background-primary-default-hover
+foreground/primary/default        →  text-foreground-primary-default
+radius/radius-md                  →  rounded-[var(--radius-md)]
+padding/padding-sm                →  px-[var(--padding-sm)]
+```
+
+The AI generates a cva definition that mirrors the Figma structure:
+
+```tsx
+const buttonVariants = cva(
+  'inline-flex items-center justify-center gap-[var(--spacing-sm)] ...',
+  {
+    variants: {
+      variant: {
+        default: 'bg-background-primary-default text-foreground-primary-default ...',
+        destructive: 'bg-background-destructive-default ...',
+      },
+      size: {
+        sm: 'h-10 px-[var(--padding-sm)] text-sm',
+        md: 'h-11 px-[var(--padding-sm)] text-base',
+      },
+    },
+  },
+)
+```
+
+AllVariants story in Storybook confirms visual parity with the Figma component sheet.
+
+### Example: Token Change Propagation
+
+The real test of a design system. What happens when you change a color?
+
+> `[video: changing primary-900 in Figma, running the pipeline, seeing Button update]`
+
+```
+Designer updates primary-900 in Figma
+  ↓
+Tokens Studio exports → tokens.json
+  ↓
+pnpm tokens:build → new CSS generated
+  ↓
+light.css: --background-primary-default: var(--primary-900)   ← same reference
+  ↓
+Button renders with new color. Zero code changes.
+```
+
+One primitive change propagates through the semantic layer to every component. No find-and-replace. No "which components use the primary color?" The architecture handles it.
 
 ---
 
-## What I'd Do Differently at Scale
+## Storybook
 
-This system serves one developer on one product. Scaling it to a team of 30+ engineers (like Kit's) would require changes:
+Storybook is the documentation layer.
 
-1. **Component-level tokens.** At 30+ components, the two-tier system starts showing strain. `--button-primary-bg` gives designers per-component control without touching the semantic layer.
+> `[gif: browsing Storybook autodocs page for Button, showing props table and variants]`
 
-2. **Figma Variables pipeline.** Currently tokens live in code and Figma mirrors them manually. At scale, I'd automate this — export `tokens.css` to Figma Variables via Style Dictionary or a custom sync script. The token architecture is already structured for this: primitives map to a Figma primitive collection, semantics map to a semantic collection with light/dark modes.
+Designers see an autodocs page with props tables and live examples. They can answer "what variants does Button support?" without asking an engineer.
 
-3. **Contribution guidelines.** A volunteer Component Librarians model works early on but needs formalized ownership. Clear criteria for what gets into the system vs. stays as a local pattern.
+Engineers see AllVariants stories showing every combination in one view, matching the Figma component sheet. Interactive controls let them test any combination of props.
 
-4. **Visual regression testing.** Chromatic is already set up. At scale, I'd add snapshot approval workflows so token changes get visual review before merging.
+Deployed on Chromatic with a shareable URL. No local setup needed.
 
 ---
 
-## Lessons
+## CSS Distribution
 
-1. **Start with tokens, not components.** The token system constrains every decision downstream. Getting it right first prevents rework when components inevitably change.
+A Tailwind component library has a packaging problem. The consuming app's Tailwind doesn't scan `node_modules/`, so classes like `bg-background-muted` never get generated.
 
-2. **Build what you use.** Every component in this system exists in production Ralfy. Zero speculative components. The design system earned trust because it solved real problems, not hypothetical ones.
+> `[gif: before/after, component rendering without styles vs with styles.css import]`
 
-3. **Three rendering surfaces forced better architecture.** The constraint of serving Tailwind, Shadow DOM, and inline styles from one token source pushed toward a cleaner separation than a single-context system would have demanded.
+I researched how the ecosystem solves this (shadcn copies code, Radix ships pre-built CSS, daisyUI uses a plugin, Chakra uses CSS-in-JS) and chose the approach the Tailwind team recommends for v4.
 
-4. **CLAUDE.md is the unexpected multiplier.** A rules file readable by both humans and AI turns design system governance from a review process into an automated capability.
+ralfy-ui ships a `styles.css` that tells the consumer's Tailwind to scan the library and provides token variables. The consumer adds one import:
+
+```css
+@import "tailwindcss";
+@import "ralfy-ui/styles.css";
+```
+
+That's it. Tree-shaking works. Tokens integrate naturally. No configuration beyond one line.
+
+---
+
+## At Scale
+
+This system serves one developer on one product. Scaling to a team would need:
+
+**Component-level tokens.** At 30+ components, the two-tier system shows strain. Per-component tokens like `--button-primary-bg` would give finer control.
+
+**Contribution guidelines.** Clear ownership of what enters the system vs. stays local.
+
+**Visual regression testing.** Chromatic is set up. At scale, snapshot approval workflows would catch token changes before merging.
+
+---
+
+## What I Learned
+
+**Tokens first, components second.** The token system constrains every decision downstream. Getting it right first prevents rework.
+
+**Build what you use.** Every component exists in production. Zero speculative components.
+
+**Three surfaces forced better architecture.** Serving Tailwind, Shadow DOM, and inline styles from one token source pushed toward cleaner separation than a single app would have.
+
+**The workflow matters more than the components.** Anyone can build a Button. The pipeline from Figma to production is what keeps a design system alive.
+
+**CLAUDE.md is the unexpected multiplier.** A rules file readable by both humans and AI turns design system governance from a review process into an automated capability.

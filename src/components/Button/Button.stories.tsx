@@ -17,17 +17,49 @@ const ChevronRightIcon = () => (
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'A polymorphic button component with 6 visual variants, 4 sizes, loading state, and icon support. Supports `asChild` to render as any element (e.g. anchor tag). Built with Figma design tokens.',
+      },
+    },
+  },
   argTypes: {
     variant: {
       control: 'select',
       options: ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link'],
+      description: 'Visual style of the button',
+      table: { defaultValue: { summary: 'default' } },
     },
     size: {
       control: 'select',
       options: ['sm', 'md', 'lg', 'icon'],
+      description: 'Button size — sm (40px), md (44px), lg (48px), icon (40x40)',
+      table: { defaultValue: { summary: 'md' } },
     },
-    loading: { control: 'boolean' },
-    disabled: { control: 'boolean' },
+    loading: {
+      control: 'boolean',
+      description: 'Shows a spinner and disables the button',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the button',
+    },
+    iconLeft: {
+      description: 'Icon element rendered before the label',
+      table: { type: { summary: 'ReactNode' } },
+    },
+    iconRight: {
+      description: 'Icon element rendered after the label',
+      table: { type: { summary: 'ReactNode' } },
+    },
+    asChild: {
+      control: 'boolean',
+      description: 'Renders as its child element (e.g. an anchor tag) via Radix Slot',
+      table: { defaultValue: { summary: 'false' } },
+    },
     children: { control: 'text' },
   },
 }
@@ -134,4 +166,46 @@ export const Disabled: Story = {
     children: 'Disabled',
     disabled: true,
   },
+}
+
+export const AsLink: Story = {
+  args: {
+    asChild: true,
+    children: <a href="/example">Link Button</a>,
+  },
+}
+
+const variants = ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const
+const sizes = ['sm', 'md', 'lg'] as const
+
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {variants.map((variant) => (
+        <div key={variant} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ width: 100, fontSize: 12, color: '#888' }}>{variant}</span>
+          <Button variant={variant}>Label</Button>
+          <Button variant={variant} iconLeft={<MailIcon />}>Email</Button>
+          <Button variant={variant} iconRight={<ChevronRightIcon />}>Next</Button>
+          <Button variant={variant} disabled>Disabled</Button>
+          <Button variant={variant} loading>Loading</Button>
+        </div>
+      ))}
+    </div>
+  ),
+}
+
+export const AllSizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', alignItems: 'end', gap: 12 }}>
+      {sizes.map((size) => (
+        <Button key={size} size={size}>
+          {size.toUpperCase()}
+        </Button>
+      ))}
+      <Button size="icon" aria-label="Mail">
+        <MailIcon />
+      </Button>
+    </div>
+  ),
 }

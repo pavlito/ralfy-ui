@@ -3,7 +3,7 @@
  */
 
 .dark {
-  --background-primary-default-hover: #fafafacc;
+  --background-primary-default-hover: oklch(0.9851 0 0 / 0.8);
   --background-destructive-default-hover: oklch(0.4437 0.1613 26.9 / 0.8);
   --background-destructive-light: oklch(0.5771 0.2152 27.3 / 0.15);
   --background-destructive-light-hover: oklch(0.5771 0.2152 27.3 / 0.2);
@@ -40,7 +40,7 @@
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
   --spacing-3xl: 40px;
-  --spacing-4xl: 40px;
+  --spacing-4xl: 64px;
   --padding-none: 0;
   --padding-xxs: 8px;
   --padding-xs: 12px;

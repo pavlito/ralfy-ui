@@ -2,7 +2,7 @@
 
 A design system extracted from a production React application, built to demonstrate how token-driven component architecture reduces engineering time and eliminates design-to-code drift.
 
-> **Live Storybook:** [Browse Components on Chromatic](https://69983a8349303a08fb1562fd-xrtnonxtkh.chromatic.com/)
+> **Live Storybook:** [Browse Components on Chromatic](https://6999e35613453c9b648d640e-iwtddknqko.chromatic.com/)
 
 ## Why This Exists
 
@@ -29,17 +29,11 @@ Tier 2: Semantic      →  primary, muted, destructive
 
 | Component | Type | Key Features |
 |-----------|------|-------------|
-| **Button** | Presentational | 4 variants, 3 sizes, loading state, icon support, `asChild` polymorphism |
-| **Input** | Controlled | Label, helper text, error state, icon, `aria-describedby` |
-| **Card** | Compound | Card + Header + Title + Description + Content + Footer |
-| **Badge** | Presentational | 5 semantic variants (success, warning, error, info, neutral) |
-| **Avatar** | Presentational | Image/initials/fallback, 3 sizes, online/offline status |
-| **Toggle** | Controlled | Radix Switch, keyboard accessible, label association |
-| **Dialog** | Compound | Radix Dialog, overlay, Trigger + Content + Header + Footer + Close |
-| **Alert** | Compound | 5 variants (info, success, warning, error, neutral), Alert + Title + Description |
+| **Button** | Presentational | 6 variants, 4 sizes, loading state, icon support, `asChild` polymorphism |
+| **Alert** | Compound | 4 variants (default, destructive, warning, success), Alert + Title + Description |
 | **Sidebar** | Compound | 16 sub-components, 3 size variants, collapsible mode, brand header, menus with sub-items |
 | **Tabs** | Compound | Radix Tabs, 3 sizes, TabsList + TabsTrigger + TabsContent |
-| **TabItem** | Presentational | Standalone tab button, 3 sizes, active state (used inside Tabs) |
+| **TabItem** | Presentational | Standalone tab button, 3 sizes, active state |
 
 All components use `React.forwardRef`, accept `className` for customization, and use only design tokens — zero hardcoded values.
 
@@ -92,7 +86,7 @@ This design system includes a `CLAUDE.md` file — a machine-readable specificat
 | **Storybook over Styleguidist** | Richer addon ecosystem (a11y, visual regression via Chromatic), better docs generation |
 | **cva + cn pattern** | Type-safe variants with className composition — the emerging standard for Tailwind components |
 | **2-tier tokens (not 3)** | Component-level tokens add indirection without value at this scale |
-| **Compound patterns** | Card, Dialog, Sidebar, Tabs use compound composition over rigid prop drilling |
+| **Compound patterns** | Alert, Sidebar, Tabs use compound composition over rigid prop drilling |
 | **Figma token names directly** | No alias layer — Tailwind classes mirror Figma token names (e.g. `bg-background-primary-default`) |
 
 ## Tech Stack
@@ -103,7 +97,7 @@ This design system includes a `CLAUDE.md` file — a machine-readable specificat
 | TypeScript | 5.9 | Type safety |
 | Vite | 7 | Build tool |
 | Tailwind CSS | 4 | Utility-first styling |
-| Radix UI | Latest | Accessible primitives (Toggle, Dialog, Tabs, Avatar) |
+| Radix UI | Latest | Accessible primitives (Slot, Tabs) |
 | Storybook | 10 | Component documentation |
 | Vitest | 4 | Testing |
 | Testing Library | Latest | Component testing |

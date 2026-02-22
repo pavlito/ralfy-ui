@@ -92,12 +92,12 @@ Not a product designer (doesn't design pages/screens/flows). Not a pure frontend
 
 | Kit needs | Ralfy-UI demonstrates |
 |---|---|
-| Token architecture (Figma <-> code) | 2-tier OKLch system with `@theme inline` mapping |
-| React/TS component architecture | 21 components, forwardRef, cva, compound patterns |
-| Storybook as canonical reference | Live Chromatic with 94 stories |
+| Token architecture (Figma ↔ code) | Figma → Tokens Studio → Style Dictionary → CSS pipeline, live |
+| React/TS component architecture | 7 components, forwardRef, cva, compound patterns |
+| Storybook as canonical reference | Autodocs, AllVariants stories, Chromatic deploy |
 | Retrofitting legacy UI into system | Extraction of real Ralfy production components |
-| AI tooling for design-to-code | CLAUDE.md + AI workflow documentation |
-| Bridging design and code | Extension + frontend components from live product |
+| AI tooling for design-to-code | CLAUDE.md + figma-to-component skill + Figma MCP |
+| Bridging design and code | End-to-end: Figma → tokens → components → Storybook → npm → production |
 | Visual design fundamentals | Token-driven dark mode, spacing scale, typography |
 | Strong design eye | Can make system-level design decisions (spacing, hierarchy) |
 

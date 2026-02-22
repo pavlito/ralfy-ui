@@ -1,35 +1,11 @@
-@import "tailwindcss";
+/* ralfy-ui/src/styles.css — consumer imports this */
+/* NO @import "tailwindcss" — consumer provides that */
 
-/*
- * Ralfy-UI Design Tokens
- *
- * Auto-generated from Figma via Tokens Studio + Style Dictionary.
- * Source of truth: Figma → tokens.json → pnpm tokens:build
- *
- * DO NOT edit generated/*.css files — they are overwritten on each build.
- * To change tokens, update them in Figma and re-run the pipeline.
- */
+@source "./";
 
-/* ──────────────────────────────────────────────────────
-   Generated: Primitives + Light + Dark
-   ────────────────────────────────────────────────────── */
-
-@import "./generated/primitives.css";
-@import "./generated/light.css";
-@import "./generated/dark.css";
-
-/* ──────────────────────────────────────────────────────
-   Tailwind Theme Mapping
-
-   Maps Figma token names directly to Tailwind utilities.
-   No alias layer — class names mirror Figma semantics.
-
-   Usage examples:
-     bg-background-primary-default   (button bg)
-     text-foreground-default          (body text)
-     text-white                       (text on colored surfaces)
-     border-border-default            (default border)
-   ────────────────────────────────────────────────────── */
+@import "./tokens/generated/primitives.css";
+@import "./tokens/generated/light.css";
+@import "./tokens/generated/dark.css";
 
 @theme inline {
   /* Background */
@@ -101,23 +77,4 @@
   --radius-xl: var(--radius-xl);
   --radius-xxl: var(--radius-xxl);
   --radius-full: var(--radius-full);
-}
-
-/* ──────────────────────────────────────────────────────
-   Base Styles
-
-   Must be in @layer base so Tailwind utilities (e.g.
-   border-border-destructive-default) can override them.
-   ────────────────────────────────────────────────────── */
-
-@layer base {
-  * {
-    border-color: var(--border-default);
-  }
-
-  body {
-    background-color: var(--background-default);
-    color: var(--foreground-default);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
 }

@@ -11,6 +11,7 @@ const preview: Preview = {
       },
     },
     layout: 'centered',
+    backgrounds: { disable: true },
   },
   decorators: [
     withThemeByClassName({
@@ -21,7 +22,13 @@ const preview: Preview = {
       defaultTheme: 'Light',
     }),
     (Story) => (
-      <div style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div
+        className="bg-background-default text-foreground-default"
+        style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          minHeight: '100%',
+        }}
+      >
         <Story />
       </div>
     ),

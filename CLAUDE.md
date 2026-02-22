@@ -92,107 +92,87 @@ import { Button } from '@/components/Button'
 ```
 Props: `variant` (primary|secondary|ghost|destructive), `size` (sm|md|lg), `loading`, `disabled`, `asChild`
 
-### Input
+### Alert (Compound)
 ```tsx
-import { Input } from '@/components/Input'
+import { Alert, AlertTitle, AlertDescription } from '@/components/Alert'
 
-<Input label="Email" placeholder="you@example.com" />
-<Input label="Name" helperText="Your display name" />
-<Input label="Password" errorMessage="Required" type="password" />
-<Input icon={<SearchIcon />} placeholder="Search..." />
+<Alert variant="default" icon={<InfoIcon />}>
+  <AlertTitle>Heads up</AlertTitle>
+  <AlertDescription>Description text.</AlertDescription>
+</Alert>
+<Alert variant="destructive">Error message</Alert>
+<Alert variant="warning">Warning message</Alert>
+<Alert variant="success">Success message</Alert>
 ```
-Props: `label`, `placeholder`, `helperText`, `errorMessage`, `icon`, `disabled`, `type`
+Props: `variant` (default|destructive|warning|success), `icon`
 
-### Card (Compound)
+### Sidebar (Compound)
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/Card'
+import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator, SidebarBrand } from '@/components/Sidebar'
 
-<Card variant="default">
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-    <CardDescription>Description</CardDescription>
-  </CardHeader>
-  <CardContent>Content here</CardContent>
-  <CardFooter>Actions here</CardFooter>
-</Card>
+<Sidebar side="left" collapsed={false}>
+  <SidebarHeader>
+    <SidebarBrand icon={<Logo />} title="App" description="v1.0" />
+  </SidebarHeader>
+  <SidebarContent>
+    <SidebarGroup>
+      <SidebarGroupLabel>Section</SidebarGroupLabel>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton icon={<HomeIcon />} active>Dashboard</SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
+  </SidebarContent>
+  <SidebarFooter>Footer</SidebarFooter>
+</Sidebar>
 ```
-Card props: `variant` (default|outlined|elevated)
+Props: `side` (left|right), `collapsed`
+Sub-components: SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, SidebarSeparator, SidebarBrand
 
-### Badge
+### Tabs (Compound)
 ```tsx
-import { Badge } from '@/components/Badge'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs'
 
-<Badge variant="success">Active</Badge>
-<Badge variant="warning">Pending</Badge>
-<Badge variant="error">Failed</Badge>
-<Badge variant="info">New</Badge>
-<Badge variant="neutral">Draft</Badge>
+<Tabs defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+  <TabsContent value="tab1">Content 1</TabsContent>
+  <TabsContent value="tab2">Content 2</TabsContent>
+</Tabs>
 ```
-Props: `variant` (success|warning|error|info|neutral), `size` (sm|md)
+Built on Radix Tabs. Sub-components: Tabs (Root), TabsList, TabsTrigger, TabsContent
 
-### Avatar
+### TabItem
 ```tsx
-import { Avatar } from '@/components/Avatar'
+import { TabItem } from '@/components/TabItem'
 
-<Avatar src="url" alt="Name" fallback="PL" />
-<Avatar fallback="PL" size="lg" status="online" />
+<TabItem active size="sm">Tab Label</TabItem>
 ```
-Props: `src`, `alt`, `fallback`, `size` (sm|md|lg), `status` (online|offline)
-
-### Toggle
-```tsx
-import { Toggle } from '@/components/Toggle'
-
-<Toggle checked={value} onCheckedChange={setValue} label="Enable" />
-```
-Props: `checked`, `defaultChecked`, `onCheckedChange`, `disabled`, `label`, `id`
-
-### Dialog (Compound)
-```tsx
-import {
-  Dialog, DialogTrigger, DialogContent, DialogHeader,
-  DialogFooter, DialogTitle, DialogDescription, DialogClose,
-} from '@/components/Dialog'
-
-<Dialog>
-  <DialogTrigger asChild>
-    <Button>Open</Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Title</DialogTitle>
-      <DialogDescription>Description text.</DialogDescription>
-    </DialogHeader>
-    {/* content */}
-    <DialogFooter>
-      <DialogClose asChild><Button variant="secondary">Cancel</Button></DialogClose>
-      <Button>Confirm</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-```
-Sub-components: `Dialog` (Root), `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`
+Props: `active`, `size` (sm|md|lg), `disabled`
 
 ## Patterns
 
 ### Compound Components
-Use Card's compound pattern for complex UI. Each sub-component works independently:
+Use compound pattern for complex UI (Alert, Sidebar, Tabs). Each sub-component works independently:
 ```tsx
-<Card>
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-  </CardHeader>
-  <CardContent>Content</CardContent>
-</Card>
+<Sidebar>
+  <SidebarHeader>
+    <SidebarBrand title="App" />
+  </SidebarHeader>
+  <SidebarContent>...</SidebarContent>
+</Sidebar>
 ```
 
 ### Accessibility
 - Every interactive element is keyboard accessible
 - Focus states use `focus-visible:ring-2 ring-border-primary-default`
-- Error states link to inputs via `aria-describedby`
-- Toggle uses `aria-checked` via Radix Switch
-- Avatar uses Radix Avatar for proper image loading/fallback
-- Dialog uses Radix Dialog with compound pattern, overlay, and close button
+- Alert uses `role="alert"` for screen readers
+- TabItem uses `role="tab"` with `aria-selected`
+- Tabs built on Radix Tabs (keyboard nav, ARIA roles)
+- Button supports `asChild` via Radix Slot for polymorphic rendering
 
 ### Component Variants
 Use `cva` (class-variance-authority) for variant management:
@@ -211,7 +191,7 @@ import { cn } from '@/lib/cn'
 ## File Structure
 ```
 src/
-├── components/     # React components (Button/, Input/, Card/, Badge/, Avatar/, Toggle/, Dialog/)
+├── components/     # React components (Button/, Alert/, Sidebar/, TabItem/, Tabs/)
 ├── tokens/         # Design tokens (tokens.css, colors.ts, spacing.ts, etc.)
 ├── lib/            # Utilities (cn.ts)
 ├── test/           # Test setup

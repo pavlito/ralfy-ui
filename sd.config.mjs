@@ -38,7 +38,7 @@ StyleDictionary.registerTransform({
       const alpha = color.alpha;
       const L = Number(l.toFixed(4));
       const C = Number(c.toFixed(4));
-      const H = Number.isNaN(h) ? 0 : Number(h.toFixed(1));
+      const H = (h == null || Number.isNaN(h)) ? 0 : Number(h.toFixed(1));
 
       if (alpha < 1) {
         const a = Math.round(alpha * 100) / 100;

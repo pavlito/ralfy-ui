@@ -19,7 +19,7 @@ import {
   SidebarSeparator,
   SidebarBrand,
 } from '.'
-import { Input } from '../Input'
+/* Input component was removed — use plain <input> for search in stories */
 
 /* ─── Icons (inline SVGs matching Figma) ────────────── */
 
@@ -194,7 +194,10 @@ export const GroupedBySection: Story = {
           trailing={<ChevronsUpDownIcon />}
         />
         <div className="px-2">
-          <Input icon={<SearchIcon />} placeholder="Search" />
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-icon-muted"><SearchIcon /></span>
+            <input placeholder="Search" className="w-full rounded-[var(--radius-md)] border border-border-default bg-background-input px-3 py-1.5 pl-8 text-sm text-foreground-default placeholder:text-foreground-muted outline-none" />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -256,7 +259,10 @@ export const WithIcons: Story = {
           trailing={<ChevronsUpDownIcon />}
         />
         <div className="px-2">
-          <Input icon={<SearchIcon />} placeholder="Search" />
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-icon-muted"><SearchIcon /></span>
+            <input placeholder="Search" className="w-full rounded-[var(--radius-md)] border border-border-default bg-background-input px-3 py-1.5 pl-8 text-sm text-foreground-default placeholder:text-foreground-muted outline-none" />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -319,7 +325,10 @@ export const WithSubmenu: Story = {
           trailing={<ChevronsUpDownIcon />}
         />
         <div className="px-2">
-          <Input icon={<SearchIcon />} placeholder="Search" />
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-icon-muted"><SearchIcon /></span>
+            <input placeholder="Search" className="w-full rounded-[var(--radius-md)] border border-border-default bg-background-input px-3 py-1.5 pl-8 text-sm text-foreground-default placeholder:text-foreground-muted outline-none" />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -381,7 +390,10 @@ export const WithCollapsibleSubmenus: Story = {
           trailing={<ChevronsUpDownIcon />}
         />
         <div className="px-2">
-          <Input icon={<SearchIcon />} placeholder="Search" />
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-icon-muted"><SearchIcon /></span>
+            <input placeholder="Search" className="w-full rounded-[var(--radius-md)] border border-border-default bg-background-input px-3 py-1.5 pl-8 text-sm text-foreground-default placeholder:text-foreground-muted outline-none" />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
