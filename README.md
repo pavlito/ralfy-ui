@@ -106,7 +106,7 @@ This design system includes a `CLAUDE.md` file — a machine-readable specificat
 
 ## Documentation
 
-- [Case Study](docs/case-study.md) — Full portfolio case study
+- [Case Study](docs/case-study/index.html) — Full portfolio case study
 - [Token Pipeline](docs/tokens-workflow.md) — Figma → Style Dictionary → CSS workflow
 
 ## License
