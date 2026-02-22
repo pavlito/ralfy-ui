@@ -23,21 +23,47 @@ Tier 2: Semantic      →  primary, muted, destructive
 - **Format:** OKLch (perceptually uniform, CSS Color Level 4, Tailwind v4 native)
 - **Modes:** Light + Dark (CSS custom properties swap under `.dark` class)
 - **Mapping:** `@theme inline` block bridges CSS variables → Tailwind utility classes
-
-See: [Token Architecture Deep Dive](docs/token-architecture.md)
+- **Pipeline:** Figma → Tokens Studio → `tokens.json` → Style Dictionary → `src/tokens/generated/*.css`
 
 ## Components
 
 | Component | Type | Key Features |
 |-----------|------|-------------|
-| **Button** | Presentational | 4 variants, 3 sizes, loading state, `asChild` polymorphism |
+| **Button** | Presentational | 4 variants, 3 sizes, loading state, icon support, `asChild` polymorphism |
 | **Input** | Controlled | Label, helper text, error state, icon, `aria-describedby` |
 | **Card** | Compound | Card + Header + Title + Description + Content + Footer |
 | **Badge** | Presentational | 5 semantic variants (success, warning, error, info, neutral) |
 | **Avatar** | Presentational | Image/initials/fallback, 3 sizes, online/offline status |
 | **Toggle** | Controlled | Radix Switch, keyboard accessible, label association |
+| **Dialog** | Compound | Radix Dialog, overlay, Trigger + Content + Header + Footer + Close |
+| **Alert** | Compound | 5 variants (info, success, warning, error, neutral), Alert + Title + Description |
+| **Sidebar** | Compound | 16 sub-components, 3 size variants, collapsible mode, brand header, menus with sub-items |
+| **Tabs** | Compound | Radix Tabs, 3 sizes, TabsList + TabsTrigger + TabsContent |
+| **TabItem** | Presentational | Standalone tab button, 3 sizes, active state (used inside Tabs) |
 
 All components use `React.forwardRef`, accept `className` for customization, and use only design tokens — zero hardcoded values.
+
+### Sidebar Deep Dive
+
+The Sidebar is the most complex component, with 16 sub-components that compose together:
+
+```
+Sidebar (root)
+├── SidebarHeader / SidebarFooter
+├── SidebarContent
+│   └── SidebarGroup
+│       ├── SidebarGroupLabel (size variants)
+│       ├── SidebarGroupAction
+│       └── SidebarMenu
+│           └── SidebarMenuItem
+│               ├── SidebarMenuButton (size, active, disabled, icon, shortcut, rightIcon)
+│               ├── SidebarMenuAction (hover-reveal)
+│               └── SidebarMenuSub → SidebarMenuSubItem → SidebarMenuSubButton
+├── SidebarSeparator
+└── SidebarBrand (size, active, icon, title, description, trailing)
+```
+
+Features: CSS-only collapsed mode (`group-data-[collapsed]`), 3 size variants (sm/md/lg), Figma-matched focus ring, left/right placement.
 
 ## Quick Start
 
@@ -57,8 +83,6 @@ This design system includes a `CLAUDE.md` file — a machine-readable specificat
 
 **What this means in practice:** When an AI reads CLAUDE.md before generating code, it uses the correct tokens, imports, and component APIs without manual review. This eliminates a category of "fix the AI output" work.
 
-See: [AI Workflow Documentation](docs/ai-workflow.md)
-
 ## Design Decisions
 
 | Decision | Rationale |
@@ -68,7 +92,8 @@ See: [AI Workflow Documentation](docs/ai-workflow.md)
 | **Storybook over Styleguidist** | Richer addon ecosystem (a11y, visual regression via Chromatic), better docs generation |
 | **cva + cn pattern** | Type-safe variants with className composition — the emerging standard for Tailwind components |
 | **2-tier tokens (not 3)** | Component-level tokens add indirection without value at this scale |
-| **Compound Card pattern** | Flexible composition over rigid prop drilling — aligns with Kit's component needs |
+| **Compound patterns** | Card, Dialog, Sidebar, Tabs use compound composition over rigid prop drilling |
+| **Figma token names directly** | No alias layer — Tailwind classes mirror Figma token names (e.g. `bg-background-primary-default`) |
 
 ## Tech Stack
 
@@ -78,17 +103,17 @@ See: [AI Workflow Documentation](docs/ai-workflow.md)
 | TypeScript | 5.9 | Type safety |
 | Vite | 7 | Build tool |
 | Tailwind CSS | 4 | Utility-first styling |
-| Radix UI | Latest | Accessible primitives |
+| Radix UI | Latest | Accessible primitives (Toggle, Dialog, Tabs, Avatar) |
 | Storybook | 10 | Component documentation |
 | Vitest | 4 | Testing |
 | Testing Library | Latest | Component testing |
 | cva | 0.7 | Variant management |
+| Style Dictionary | 5 | Token pipeline (Figma → CSS) |
 
 ## Documentation
 
 - [Case Study](docs/case-study.md) — Full portfolio case study
-- [Token Architecture](docs/token-architecture.md) — Deep dive on token decisions
-- [AI Workflow](docs/ai-workflow.md) — AI-assisted design-to-code documentation
+- [Token Pipeline](docs/tokens-workflow.md) — Figma → Style Dictionary → CSS workflow
 
 ## License
 
