@@ -4,22 +4,60 @@
 Never hardcode colors, spacing, font sizes, or shadows. Always use Tailwind utility classes that map to CSS custom properties from `src/tokens/tokens.css`.
 
 ### Colors
-Use semantic color classes (mapped via `@theme inline` in tokens.css):
+Tailwind class names mirror Figma token names directly (no alias layer). The pattern is `{property}-{category}-{role}-{variant}`.
 
-| Role | Background | Text | Border |
-|------|-----------|------|--------|
-| Primary | `bg-primary` | `text-primary-foreground` | `border-primary` |
-| Secondary | `bg-secondary` | `text-secondary-foreground` | `border-secondary` |
-| Destructive | `bg-destructive` | `text-destructive-foreground` | `border-destructive` |
-| Muted | `bg-muted` | `text-muted-foreground` | - |
-| Accent | `bg-accent` | `text-accent-foreground` | - |
-| Success | `bg-success` | `text-success-foreground` | - |
-| Warning | `bg-warning` | `text-warning-foreground` | - |
-| Info | `bg-info` | `text-info-foreground` | - |
-| Card | `bg-card` | `text-card-foreground` | - |
-| Background | `bg-background` | `text-foreground` | `border-border` |
-| Input | `bg-input` | - | `border-input` |
-| Ring (focus) | - | - | `ring-ring` |
+#### Background colors
+| Usage | Tailwind class |
+|-------|---------------|
+| Page background | `bg-background-default` |
+| Card surface | `bg-background-card` |
+| Popover surface | `bg-background-popover` |
+| Input background | `bg-background-input` |
+| Muted surface | `bg-background-muted` |
+| Accent surface | `bg-background-accent` |
+| Primary button | `bg-background-primary-default` |
+| Primary button hover | `hover:bg-background-primary-default-hover` |
+| Primary light surface | `bg-background-primary-light` |
+| Secondary button | `bg-background-secondary-default` |
+| Destructive button | `bg-background-destructive-default` |
+| Destructive light surface | `bg-background-destructive-light` |
+| Success surface | `bg-background-success-default` |
+| Warning surface | `bg-background-warning-default` |
+| Disabled surface | `bg-background-disabled-default` |
+
+#### Text (foreground) colors
+| Usage | Tailwind class |
+|-------|---------------|
+| Default body text | `text-foreground-default` |
+| Muted/secondary text | `text-foreground-muted` |
+| Accent text | `text-foreground-accent` |
+| Primary-colored text | `text-foreground-primary-default` |
+| Secondary-colored text | `text-foreground-secondary-default` |
+| Red error/destructive text | `text-foreground-destructive-default` |
+| Green success text | `text-foreground-success-default` |
+| Yellow warning text | `text-foreground-warning-default` |
+| Disabled text | `text-foreground-disabled-default` |
+| White text (on colored bg) | `text-white` |
+
+#### Border colors
+| Usage | Tailwind class |
+|-------|---------------|
+| Default border | `border-border-default` |
+| Primary focus ring | `border-border-primary-default` |
+| Destructive border | `border-border-destructive-default` |
+| Success border | `border-border-success-default` |
+| Warning border | `border-border-warning-default` |
+
+#### Icon colors
+| Usage | Tailwind class |
+|-------|---------------|
+| Default icon | `text-icon-default` |
+| Muted icon | `text-icon-muted` |
+| Primary icon | `text-icon-primary-default` |
+| Destructive icon | `text-icon-destructive-default` |
+| Success icon | `text-icon-success-default` |
+| Warning icon | `text-icon-warning-default` |
+| Disabled icon | `text-icon-disabled-default` |
 
 ### Spacing
 Use Tailwind's spacing utilities. Custom tokens available as CSS variables:
@@ -150,7 +188,7 @@ Use Card's compound pattern for complex UI. Each sub-component works independent
 
 ### Accessibility
 - Every interactive element is keyboard accessible
-- Focus states use `focus-visible:ring-2 ring-ring`
+- Focus states use `focus-visible:ring-2 ring-border-primary-default`
 - Error states link to inputs via `aria-describedby`
 - Toggle uses `aria-checked` via Radix Switch
 - Avatar uses Radix Avatar for proper image loading/fallback
@@ -193,6 +231,6 @@ src/
 ## Rules
 - Never hardcode colors — use token classes
 - Every component supports `className` prop for customization
-- Use semantic tokens (bg-primary) over primitives (bg-blue-600)
+- Use Figma token classes (bg-background-primary-default) over primitives (bg-blue-600)
 - All components use `React.forwardRef`
 - Dark mode: toggle `.dark` class on `<html>`
