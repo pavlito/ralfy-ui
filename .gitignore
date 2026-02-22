@@ -5,3 +5,5 @@ storybook-static
 .env
 docs/cover-letter-draft.md
 .tokens-tmp
+build-storybook.log
+claude-talk-to-figma-mcp/
