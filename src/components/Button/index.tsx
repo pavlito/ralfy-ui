@@ -4,24 +4,31 @@ import { Slot } from '@radix-ui/react-slot'
 import { cn } from '../../lib/cn'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-[var(--spacing-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-primary-default focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 rounded-[var(--radius-md)]',
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        default:
+          'bg-background-primary-default text-foreground-primary-default hover:bg-background-primary-default-hover',
+        secondary:
+          'bg-background-primary-light text-foreground-accent hover:bg-background-primary-light-hover',
         destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+          'bg-background-destructive-default text-foreground-primary-default hover:bg-background-destructive-default-hover',
+        outline:
+          'border border-border-default bg-transparent text-foreground-default hover:bg-background-accent',
+        ghost:
+          'bg-transparent text-foreground-default hover:bg-background-accent',
+        link: 'bg-transparent text-foreground-default underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'h-8 px-3 text-xs rounded-md',
-        md: 'h-10 px-4 text-sm rounded-md',
-        lg: 'h-12 px-6 text-base rounded-lg',
+        sm: 'h-10 px-[var(--padding-sm)] py-[var(--padding-xxs)] text-sm',
+        md: 'h-11 px-[var(--padding-sm)] py-[var(--padding-xxs)] text-base',
+        lg: 'h-12 px-[var(--padding-sm)] py-[var(--padding-xxs)] text-base',
+        icon: 'size-10',
       },
     },
     defaultVariants: {
-      variant: 'primary',
+      variant: 'default',
       size: 'md',
     },
   },
@@ -60,6 +67,10 @@ export interface ButtonProps
   asChild?: boolean
   /** Shows a loading spinner and disables the button. */
   loading?: boolean
+  /** Icon to show on the left side of the button text. */
+  iconLeft?: React.ReactNode
+  /** Icon to show on the right side of the button text. */
+  iconRight?: React.ReactNode
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -72,6 +83,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       disabled,
       children,
+      iconLeft,
+      iconRight,
       ...props
     },
     ref,
@@ -91,7 +104,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           <>
             {loading && <Spinner />}
+            {iconLeft}
             {children}
+            {iconRight}
           </>
         )}
       </Comp>
