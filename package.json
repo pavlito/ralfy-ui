@@ -5,7 +5,8 @@
   "description": "Token-driven design system extracted from a production React application",
   "files": [
     "dist",
-    "src/tokens/tokens.css"
+    "src/tokens/tokens.css",
+    "src/tokens/generated"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -20,6 +21,9 @@
       "types": "./dist/tokens/index.d.ts"
     },
     "./tokens.css": "./src/tokens/tokens.css",
+    "./generated/primitives.css": "./src/tokens/generated/primitives.css",
+    "./generated/light.css": "./src/tokens/generated/light.css",
+    "./generated/dark.css": "./src/tokens/generated/dark.css",
     "./package.json": "./package.json"
   },
   "sideEffects": [
