@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ralfy-UI: Design System Case Study</title>
+
+  <!-- OG meta tags for link previews -->
+  <meta property="og:title" content="Ralfy-UI: Design System Case Study">
+  <meta property="og:description" content="How I extracted a token-driven design system from a live product and built the Figma-to-production pipeline that keeps it in sync.">
+  <meta property="og:type" content="article">
+  <meta name="description" content="How I extracted a token-driven design system from a live product and built the Figma-to-production pipeline that keeps it in sync.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>R</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+  <!-- Prism.js syntax highlighting (Tomorrow Night theme) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+
+    /* Base */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #fafafa;
+      color: #18181b;
+      line-height: 1.7;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin: 0 0 8px;
+      color: #09090b;
+    }
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 64px 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e4e4e7;
+      color: #09090b;
+    }
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 32px 0 12px;
+      color: #18181b;
+    }
+    p { margin: 0 0 24px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { font-weight: 600; }
+
+    /* Inline code */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: #f4f4f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Code blocks (Prism overrides) */
+    pre {
+      margin: 0 0 24px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      margin: 0 0 24px;
+    }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid #e4e4e7;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #71717a;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f4f4f5;
+      vertical-align: top;
+    }
+
+    /* Dividers */
+    hr {
+      border: none;
+      height: 1px;
+      background: #e4e4e7;
+      margin: 48px 0;
+    }
+
+    /* Lists */
+    ol, ul {
+      margin: 0 0 24px;
+      padding-left: 24px;
+    }
+    li {
+      margin-bottom: 12px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 48px;
+    }
+    .hero .subtitle {
+      color: #71717a;
+      font-size: 20px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .hero .links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero .links a {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #e4e4e7;
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #18181b;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .hero .links a:hover {
+      border-color: #a1a1aa;
+      background: #fff;
+      text-decoration: none;
+    }
+
+    /* Pipeline diagram */
+    .pipeline {
+      background: #18181b;
+      color: #a1a1aa;
+      padding: 32px;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 2;
+      margin: 0 0 24px;
+      overflow-x: auto;
+    }
+    .pipeline .step {
+      color: #e4e4e7;
+    }
+    .pipeline .arrow {
+      color: #52525b;
+    }
+    .pipeline .label {
+      color: #71717a;
+      font-style: italic;
+    }
+    .pipeline .highlight {
+      color: #60a5fa;
+    }
+
+    /* Callout */
+    .callout {
+      background: #eff6ff;
+      border-left: 3px solid #2563eb;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 16px;
+      color: #1e3a5f;
+    }
+    .callout p { margin: 0; }
+
+    /* Media placeholders */
+    .media-placeholder {
+      background: #f4f4f5;
+      border: 2px dashed #d4d4d8;
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+      margin: 24px 0;
+      color: #71717a;
+      font-size: 15px;
+    }
+    .media-placeholder .label {
+      font-weight: 600;
+      color: #52525b;
+      margin-bottom: 4px;
+    }
+    .media-placeholder .hint {
+      font-size: 13px;
+      color: #a1a1aa;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body { font-size: 16px; }
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; margin-top: 48px; }
+      .hero { padding-top: 48px; }
+      .hero .subtitle { font-size: 17px; }
+      .container { padding: 32px 16px 64px; }
+      table { font-size: 13px; }
+      th, td { padding: 8px 12px; }
+      .pipeline { padding: 20px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+
+    <!-- 1. Hero -->
+    <header class="hero">
+      <h1>Ralfy-UI: Design System Case Study</h1>
+      <p class="subtitle">
+        How I extracted a token-driven design system from a live product
+        and built the Figma-to-production pipeline that keeps it in sync.
+      </p>
+      <div class="links">
+        <a href="https://6999e35613453c9b648d640e-albaloikgl.chromatic.com/" target="_blank" rel="noopener noreferrer">Live Storybook</a>
+        <a href="https://github.com/pavlito/ralfy-ui" target="_blank" rel="noopener noreferrer">Source Code</a>
+      </div>
+
+      <div class="media-placeholder" style="margin-top: 32px;">
+        <div class="label">Hero Image: Storybook Component Overview</div>
+        <div class="hint">Full-width screenshot — Button AllVariants or Storybook dashboard with components</div>
+      </div>
+    </header>
+
+    <article>
+    <hr>
+
+    <!-- 2. What I Built -->
+    <h2>What I Built</h2>
+
+    <p>
+      Ralfy is a LinkedIn feed management tool &mdash; custom feeds, AI-generated comments, reply drafts.
+      The stack includes a React frontend, Express backend, and a Chrome extension that injects UI
+      directly into LinkedIn's pages.
+    </p>
+
+    <p>
+      As the product grew, I kept duplicating color values, spacing, and component patterns across three
+      separate rendering surfaces. The frontend had 12 unique grays. The Chrome extension had 8, and only 4
+      matched. Changing the primary color in the app meant the extension still used the old one.
+    </p>
+
+    <p>
+      Ralfy-UI is the design system I extracted to fix that &mdash; and the end-to-end workflow that keeps
+      Figma, code, and production in sync.
+    </p>
+
+    <hr>
+
+    <!-- 3. The End-to-End Workflow -->
+    <h2>The End-to-End Workflow</h2>
+
+    <p>
+      This is the core of the project &mdash; not just components, but the system that produces and updates them.
+    </p>
+
+    <div class="pipeline">
+      <span class="step">Figma</span> <span class="label">(designer changes a token)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span> <span class="label">Tokens Studio plugin exports W3C DTCG JSON</span><br>
+      <span class="step">tokens.json</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span> <span class="label">Style Dictionary 5</span> <span class="highlight">(pnpm tokens:build)</span><br>
+      <span class="step">src/tokens/generated/</span><br>
+      <span class="label">&nbsp;&nbsp;├── primitives.css</span> <span class="label">(raw OKLch colors)</span><br>
+      <span class="label">&nbsp;&nbsp;├── light.css</span> <span class="label">(semantic tokens, :root)</span><br>
+      <span class="label">&nbsp;&nbsp;└── dark.css</span> <span class="label">(semantic tokens, .dark)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span><br>
+      <span class="step">src/tokens/tokens.css</span> <span class="label">(@theme inline &rarr; Tailwind classes)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span><br>
+      <span class="step">Components</span> <span class="label">use Tailwind token classes</span> <span class="highlight">(bg-background-primary-default)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span><br>
+      <span class="step">Storybook</span> <span class="label">(visual verification &mdash; does it match Figma?)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span><br>
+      <span class="step">npm publish</span> <span class="label">(versioned release)</span><br>
+      <span class="arrow">&nbsp;&nbsp;&#8595;</span><br>
+      <span class="step">Production</span> <span class="highlight">import { Button } from 'ralfy-ui'</span>
+    </div>
+
+    <p>
+      A designer changes a color in Figma. Tokens Studio exports. Style Dictionary builds CSS. Components
+      automatically reflect the change in Storybook. <code>npm publish</code> delivers to production.
+      No manual syncing, no copy-pasting hex values, no "which shade of gray is this?"
+    </p>
+
+    <div class="media-placeholder">
+      <div class="label">Video: Workflow Demo</div>
+      <div class="hint">2-3 min walkthrough — Figma token change propagating to Storybook and production</div>
+    </div>
+
+    <div class="callout" role="note">
+      <p>
+        This is exactly the class of problems design systems exist to solve: incomplete Figma-to-code token parity,
+        manual version bumps, and UI inconsistency from ad-hoc color choices.
+      </p>
+    </div>
+
+    <hr>
+
+    <!-- 4. From Organic Growth to System -->
+    <h2>From Organic Growth to System</h2>
+
+    <p>
+      Ralfy wasn't built with a design system. It was built feature by feature &mdash; a button here, a card
+      there, colors picked per-component. The Chrome extension duplicated styles from the frontend. This isn't
+      a greenfield design system. It's a system extracted from a live product, which is a fundamentally different
+      (and harder) problem.
+    </p>
+
+    <ol>
+      <li>
+        <strong>Audit.</strong> I cataloged every color value, spacing unit, and component pattern across the
+        frontend and extension. The frontend had 12 unique grays. The extension had 8, and only 4 matched.
+      </li>
+      <li>
+        <strong>Identify patterns.</strong> Most components fell into categories: Button, Input, Card, Badge,
+        Avatar, Toggle, Dialog. Everything else was a composition of these.
+      </li>
+      <li>
+        <strong>Extract tokens first.</strong> Before touching components, I defined the token layer &mdash;
+        one source of truth for color, spacing, and typography. This was the constraint that made everything
+        else possible.
+      </li>
+      <li>
+        <strong>Extract components.</strong> Each production component was rebuilt against the token system.
+        Button was the first &mdash; fully tested, documented in Storybook with autodocs and AllVariants stories.
+        The remaining components follow the same pattern as they're prioritized.
+      </li>
+      <li>
+        <strong>Connect to Figma.</strong> Set up Tokens Studio in Figma with the same token structure &mdash;
+        primitives, light mode, dark mode. Tokens Studio exports to <code>tokens.json</code>, Style Dictionary
+        builds CSS. The Figma file is the source of truth; code follows automatically.
+      </li>
+    </ol>
+
+    <hr>
+
+    <!-- 5. Three Surfaces, One Visual Language -->
+    <h2>Three Surfaces, One Visual Language</h2>
+
+    <p>
+      Most design systems target one rendering context. Ralfy has three, and each has different constraints.
+    </p>
+
+    <h3>Frontend App</h3>
+    <p>
+      Standard React + Tailwind. Components use <code>bg-background-primary-default</code>,
+      <code>text-foreground-default</code>. Normal developer experience &mdash; token classes map directly
+      to Figma variable names, so there is zero translation layer between design and code.
+    </p>
+
+    <h3>Chrome Extension &mdash; Shadow DOM</h3>
+    <p>
+      The AI comment generator lives inside a Shadow Root injected into LinkedIn's page. Same Tailwind tokens,
+      but isolated from LinkedIn's stylesheets via <code>:host</code> scoping. CSS variables are redeclared
+      inside the shadow boundary so the component renders identically whether it's in the main app or floating
+      over someone's LinkedIn feed.
+    </p>
+
+    <h3>Chrome Extension &mdash; Inline Styles</h3>
+    <p>
+      LinkedIn actively overwrites injected CSS classes. The feed manager button survives by using
+      <code>style={{}}</code> props with a JS token object. Highest specificity wins. This is the
+      least elegant delivery mechanism, but it works &mdash; and the token values still originate from
+      the same pipeline.
+    </p>
+
+    <p>
+      One set of token values, three delivery mechanisms. Changing <code>--background-primary-default</code>
+      in the token pipeline propagates to Tailwind classes in the app, CSS variables in the Shadow DOM,
+      and JS token objects in the inline-styled components.
+    </p>
+
+    <hr>
+
+    <!-- 6. Token Architecture -->
+    <h2>Token Architecture</h2>
+
+    <h3>Two Tiers</h3>
+
+    <p><strong>Primitive tokens</strong> define raw OKLch color values:</p>
+
+<pre><code class="language-css">--zinc-50: oklch(0.985 0.002 247.858);
+--zinc-900: oklch(0.274 0.006 286.033);
+--red-600: oklch(0.577 0.245 27.325);</code></pre>
+
+    <p><strong>Semantic tokens</strong> assign roles by referencing primitives:</p>
+
+<pre><code class="language-css">--background-primary-default: var(--primary-900);
+--foreground-default: var(--zinc-950);
+--border-default: var(--zinc-200);</code></pre>
+
+    <p>
+      Components only reference semantic tokens. Tailwind's <code>@theme inline</code> registers them
+      as utility classes:
+    </p>
+
+<pre><code class="language-css">@theme inline {
+  --color-background-primary-default: var(--background-primary-default);
+  --color-foreground-default: var(--foreground-default);
+  --color-border-default: var(--border-default);
+}</code></pre>
+
+    <p>
+      This gives classes like <code>bg-background-primary-default</code>,
+      <code>text-foreground-default</code>, <code>border-border-default</code> &mdash; names that match
+      the Figma token structure exactly.
+    </p>
+
+    <h3>Token Categories</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Token</th>
+          <th>Tailwind Class</th>
+          <th>Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Background</td>
+          <td><code>--background-primary-default</code></td>
+          <td><code>bg-background-primary-default</code></td>
+          <td>Button, card surfaces</td>
+        </tr>
+        <tr>
+          <td>Foreground</td>
+          <td><code>--foreground-default</code></td>
+          <td><code>text-foreground-default</code></td>
+          <td>Body text</td>
+        </tr>
+        <tr>
+          <td>Border</td>
+          <td><code>--border-default</code></td>
+          <td><code>border-border-default</code></td>
+          <td>Input borders, dividers</td>
+        </tr>
+        <tr>
+          <td>Icon</td>
+          <td><code>--icon-primary-default</code></td>
+          <td><code>text-icon-primary-default</code></td>
+          <td>Icon colors</td>
+        </tr>
+        <tr>
+          <td>Spacing</td>
+          <td><code>--spacing-sm</code></td>
+          <td><code>gap-[var(--spacing-sm)]</code></td>
+          <td>Component internal spacing</td>
+        </tr>
+        <tr>
+          <td>Padding</td>
+          <td><code>--padding-sm</code></td>
+          <td><code>px-[var(--padding-sm)]</code></td>
+          <td>Component padding</td>
+        </tr>
+        <tr>
+          <td>Radius</td>
+          <td><code>--radius-md</code></td>
+          <td><code>rounded-[var(--radius-md)]</code></td>
+          <td>Border radius</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Why OKLch</h3>
+
+    <p>Tailwind v4 uses OKLch by default. Three reasons to keep it:</p>
+
+    <ol>
+      <li>
+        <strong>Dark mode is predictable.</strong> Lightness is an independent axis. Adjusting light/dark
+        values means changing <code>L</code> without color drift. In HSL, reducing lightness shifts
+        the perceived hue.
+      </li>
+      <li>
+        <strong>Perceptual uniformity.</strong> A 10-step gray ramp looks evenly spaced to the eye. In HSL
+        it doesn't.
+      </li>
+      <li>
+        <strong>Zero conversion.</strong> OKLch values pass through Tailwind's <code>@theme inline</code>
+        without transformation.
+      </li>
+    </ol>
+
+    <h3>Light/Dark Mode</h3>
+
+    <p>
+      One set of CSS custom properties under <code>:root</code> (light) and <code>.dark</code> (dark).
+      Components never branch on mode &mdash; <code>bg-background-primary-default</code> resolves to
+      the correct value based on which class is on <code>&lt;html&gt;</code>.
+    </p>
+
+    <hr>
+
+    <!-- 7. Production Integration -->
+    <h2>Production Integration</h2>
+
+    <p>
+      Ralfy-UI isn't a standalone demo. I installed it as a dependency in the production Ralfy application
+      and imported the generated CSS files &mdash; <code>primitives.css</code>, <code>light.css</code>,
+      <code>dark.css</code> &mdash; into the app's <code>theme.css</code>. The existing theme now
+      references design system tokens instead of maintaining its own color definitions.
+    </p>
+
+    <ul>
+      <li>
+        Replaced <strong>~30 hardcoded oklch values</strong> in the production <code>:root</code> and
+        <code>.dark</code> blocks with <code>var()</code> references to ralfy-ui tokens
+      </li>
+      <li>
+        Fixed an <code>hsl()</code> wrapper bug where oklch values were incorrectly nested inside
+        <code>hsl()</code> functions in a <code>pulse-success</code> animation
+      </li>
+      <li>
+        Verified <strong>167/167 CSS variable references</strong> resolve correctly across both light and
+        dark modes
+      </li>
+    </ul>
+
+    <p>
+      The system works in production, not just Storybook.
+    </p>
+
+    <hr>
+
+    <!-- 8. UI Inconsistency Audit -->
+    <h2>UI Inconsistency Audit</h2>
+
+    <p>
+      With the token system in place, I audited the production UI for inconsistencies &mdash; places where
+      hardcoded values had drifted from the intended design. Across 6 components, I found
+      <strong>~42 hardcoded color declarations</strong> &mdash; inconsistent backgrounds, mismatched hover
+      states, raw hex values where semantic tokens should have been. After the audit,
+      those 42 declarations became <strong>~13 theme token references</strong>, with standardized spacing
+      and hover patterns. The design system didn't just prevent future drift; it revealed problems that had
+      been invisible without a single source of truth.
+    </p>
+
+    <hr>
+
+    <!-- 9. Figma Integration -->
+    <h2>Figma Integration</h2>
+
+    <h3>Tokens Studio Pipeline</h3>
+
+    <p>The Figma file uses Tokens Studio with three token sets:</p>
+
+    <div class="pipeline">
+      <span class="step">Primitives/Mode 1</span> <span class="label">&larr; raw color palettes (zinc, red, emerald, primary)</span><br>
+      <span class="step">Tokens/Light</span> <span class="label">&larr; semantic tokens for light mode</span><br>
+      <span class="step">Tokens/Dark</span> <span class="label">&larr; semantic tokens for dark mode</span><br>
+      <br>
+      <span class="label">Semantic tokens reference primitives:</span><br>
+      <span class="highlight">Background/Primary/default</span> <span class="arrow">&rarr;</span> <span class="step">{Primary.900}</span><br>
+      <br>
+      <span class="label">Export workflow:</span><br>
+      <span class="step">Tokens Studio</span> <span class="arrow">&rarr;</span> <span class="step">tokens.json</span> <span class="arrow">&rarr;</span> <span class="highlight">pnpm tokens:build</span> <span class="arrow">&rarr;</span> <span class="step">generated CSS</span> <span class="arrow">&rarr;</span> <span class="step">components update</span>
+    </div>
+
+    <p>
+      Changing a primitive propagates to every semantic token that references it. The Figma file is the source
+      of truth; code follows automatically.
+    </p>
+
+    <h3>Figma MCP for Component Development</h3>
+
+    <p>Components are rebuilt by reading the Figma design directly:</p>
+
+    <ol>
+      <li>
+        <strong>Read structure</strong> &mdash; Figma MCP extracts component variants, sizes, states,
+        and their token references
+      </li>
+      <li>
+        <strong>Map tokens</strong> &mdash; Figma variable names map 1:1 to Tailwind classes
+        (e.g., <code>background/primary/default</code> &rarr; <code>bg-background-primary-default</code>)
+      </li>
+      <li>
+        <strong>Build component</strong> &mdash; React component with <code>cva</code> variants matching
+        Figma properties
+      </li>
+      <li>
+        <strong>Verify in Storybook</strong> &mdash; AllVariants story shows every combination for visual
+        comparison with Figma
+      </li>
+    </ol>
+
+    <p>
+      This workflow is codified as a reusable skill that can be applied to any new component.
+    </p>
+
+    <div class="media-placeholder">
+      <div class="label">Screenshot: Figma Tokens Studio</div>
+      <div class="hint">Token sets in Figma — Primitives, Light, Dark — with semantic references</div>
+    </div>
+
+    <hr>
+
+    <!-- 10. Component Decisions -->
+    <h2>Component Decisions</h2>
+
+    <h3>What I Built</h3>
+
+    <p>
+      Button is the reference implementation &mdash; fully rebuilt from Figma with tests, autodocs,
+      and AllVariants stories in Storybook. It demonstrates the full workflow. The remaining components
+      are built and used in production; Storybook documentation is being added as each one goes through
+      the Figma-to-component workflow.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Why This Pattern</th>
+          <th>Key Feature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Button</strong></td>
+          <td><code>asChild</code> via Radix Slot &mdash; renders as <code>&lt;a&gt;</code>, <code>&lt;Link&gt;</code>, or any element. Six variants, four sizes, icon support.</td>
+          <td>Eliminates "ButtonLink" anti-pattern</td>
+        </tr>
+        <tr>
+          <td><strong>Input</strong></td>
+          <td>Native <code>&lt;input&gt;</code> with label, helper text, error state, icon. <code>aria-describedby</code> links errors to input.</td>
+          <td>Accessible error handling</td>
+        </tr>
+        <tr>
+          <td><strong>Card</strong></td>
+          <td>Compound component &mdash; independent sub-components compose freely. Three variants.</td>
+          <td>Avoids the 15-prop god-component</td>
+        </tr>
+        <tr>
+          <td><strong>Badge</strong></td>
+          <td>Semantic variants (success, warning, error, info). Meaning encoded in variant name.</td>
+          <td>Color-as-communication</td>
+        </tr>
+        <tr>
+          <td><strong>Avatar</strong></td>
+          <td>Radix Avatar handles image loading, error fallback, initials. Status indicator.</td>
+          <td>Edge cases handled by Radix</td>
+        </tr>
+        <tr>
+          <td><strong>Toggle</strong></td>
+          <td>Radix Switch &mdash; keyboard navigation, <code>aria-checked</code>, focus management.</td>
+          <td>Accessibility built-in</td>
+        </tr>
+        <tr>
+          <td><strong>Dialog</strong></td>
+          <td>Radix Dialog &mdash; compound pattern, overlay, close button, compound sub-components.</td>
+          <td>Accessible modal pattern</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Patterns Used Everywhere</h3>
+
+    <ul>
+      <li>
+        <strong><code>cva</code></strong> &mdash; Variant logic is declarative. Adding a variant is one line,
+        not a conditional chain. TypeScript catches typos at compile time.
+      </li>
+      <li>
+        <strong><code>cn()</code></strong> &mdash; Merges classNames and deduplicates Tailwind utilities.
+        Users override styles without <code>!important</code>.
+      </li>
+      <li>
+        <strong><code>React.forwardRef</code></strong> &mdash; Every component. Required for form libraries,
+        animation tools, tooltip positioning.
+      </li>
+    </ul>
+
+    <h3>What I Didn't Build</h3>
+
+    <p>
+      No navigation, no form validation, no data tables. These are the components Ralfy actually uses. A design
+      system earns trust by doing fewer things well, not by having a long component list.
+    </p>
+
+    <hr>
+
+    <!-- 11. AI-Assisted Workflow -->
+    <h2>AI-Assisted Workflow</h2>
+
+    <p>
+      The project includes <code>CLAUDE.md</code> &mdash; a machine-readable specification that AI tools read
+      before generating code. It lists every token class, component API, variant option, and accessibility
+      requirement. The result: AI-generated code that follows the design system by default instead of reaching
+      for hardcoded values.
+    </p>
+
+    <p><strong>Without CLAUDE.md:</strong></p>
+
+<pre><code class="language-tsx">&lt;button className="bg-[#1a1a2e] text-white px-4 py-2 rounded-md"&gt;
+  Save
+&lt;/button&gt;</code></pre>
+
+    <p><strong>With CLAUDE.md:</strong></p>
+
+<pre><code class="language-tsx">&lt;Button variant="default" size="md"&gt;Save&lt;/Button&gt;</code></pre>
+
+    <p>
+      The first creates a maintenance liability &mdash; hardcoded values that won't update with token changes.
+      The second inherits dark mode, token updates, and accessibility for free.
+    </p>
+
+    <p>
+      Beyond <code>CLAUDE.md</code>, the project includes a <code>figma-to-component</code> skill &mdash; a
+      codified workflow that reads a Figma design via MCP, maps tokens, generates a React component with
+      <code>cva</code> variants, creates Storybook stories with autodocs, and verifies the build. This turns
+      "build a component from Figma" from a multi-hour manual process into a repeatable, AI-assisted workflow.
+    </p>
+
+    <hr>
+
+    <!-- 12. Storybook as Living Documentation -->
+    <h2>Storybook as Living Documentation</h2>
+
+    <p>
+      <strong>For designers:</strong> Documented components have autodocs pages with props tables, descriptions,
+      and default values. A designer can answer "what variants does Button support?" without asking an engineer.
+      The Color Palette story provides a visual reference for every token in the system &mdash; backgrounds,
+      foregrounds, borders, and icon colors &mdash; in both light and dark mode.
+    </p>
+
+    <p>
+      <strong>For engineers:</strong> Button's AllVariants story shows every variant &times; size &times; state
+      combination in one view &mdash; matching the Figma component sheet. Individual stories have interactive
+      controls (variant, size, loading, disabled) for testing combinations. Additional components &mdash; Alert,
+      Sidebar, Tabs &mdash; have their own story suites. Deployed on
+      <a href="https://6999e35613453c9b648d640e-albaloikgl.chromatic.com/" target="_blank" rel="noopener noreferrer">Chromatic</a> with a shareable
+      URL &mdash; no local setup needed.
+    </p>
+
+    <div class="media-placeholder">
+      <div class="label">Screenshot: Storybook AllVariants</div>
+      <div class="hint">Button component — all variants, sizes, and states in one view</div>
+    </div>
+
+    <hr>
+
+    <!-- 13. What I'd Do at Scale -->
+    <h2>What I'd Do at Scale</h2>
+
+    <p>
+      This system serves one developer on one product. Scaling to a team of 30+ engineers would require:
+    </p>
+
+    <ol>
+      <li>
+        <strong>Component-level tokens.</strong> At 30+ components, the two-tier system shows strain.
+        <code>--button-primary-bg</code> gives per-component control without touching the semantic layer.
+      </li>
+      <li>
+        <strong>Contribution guidelines.</strong> A volunteer "Component Librarians" model needs formalized
+        ownership. Clear criteria for what enters the system vs. stays local.
+      </li>
+      <li>
+        <strong>Visual regression testing.</strong> Chromatic is already set up. At scale, add snapshot approval
+        workflows so token changes get visual review before merging.
+      </li>
+    </ol>
+
+    <hr>
+
+    <!-- 14. Lessons -->
+    <h2>Lessons</h2>
+
+    <ol>
+      <li>
+        <strong>Start with tokens, not components.</strong> The token system constrains every decision
+        downstream. Getting it right first prevents rework.
+      </li>
+      <li>
+        <strong>Build what you use.</strong> Every component exists in production. Zero speculative components.
+      </li>
+      <li>
+        <strong>Three rendering surfaces forced better architecture.</strong> Serving Tailwind, Shadow DOM,
+        and inline styles from one token source pushed toward cleaner separation than a single-context system
+        would have demanded.
+      </li>
+      <li>
+        <strong>The workflow matters more than the components.</strong> Anyone can build a Button. The value
+        is in the pipeline: Figma &rarr; tokens &rarr; code &rarr; Storybook &rarr; production. That's what
+        keeps a design system alive.
+      </li>
+      <li>
+        <strong>CLAUDE.md is the unexpected multiplier.</strong> A rules file readable by both humans and AI
+        turns design system governance from a review process into an automated capability.
+      </li>
+    </ol>
+
+    </article>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+</body>
+</html>
