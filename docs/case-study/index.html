@@ -251,7 +251,7 @@
         and built the Figma-to-production pipeline that keeps it in sync.
       </p>
       <div class="links">
-        <a href="https://6999e35613453c9b648d640e-albaloikgl.chromatic.com/" target="_blank" rel="noopener noreferrer">Live Storybook</a>
+        <a href="https://6999e35613453c9b648d640e-iwtddknqko.chromatic.com/" target="_blank" rel="noopener noreferrer">Live Storybook</a>
         <a href="https://github.com/pavlito/ralfy-ui" target="_blank" rel="noopener noreferrer">Source Code</a>
       </div>
 
@@ -275,8 +275,8 @@
 
     <p>
       As the product grew, I kept duplicating color values, spacing, and component patterns across three
-      separate rendering surfaces. The frontend had 12 unique grays. The Chrome extension had 8, and only 4
-      matched. Changing the primary color in the app meant the extension still used the old one.
+      separate rendering surfaces. Colors were picked per-component &mdash; each surface had its own set of
+      grays, and they didn't match. Changing the primary color in the app meant the extension still used the old one.
     </p>
 
     <p>
@@ -347,11 +347,11 @@
     <ol>
       <li>
         <strong>Audit.</strong> I cataloged every color value, spacing unit, and component pattern across the
-        frontend and extension. The frontend had 12 unique grays. The extension had 8, and only 4 matched.
+        frontend and extension. Gray palettes were inconsistent &mdash; each surface had picked its own shades independently.
       </li>
       <li>
-        <strong>Identify patterns.</strong> Most components fell into categories: Button, Input, Card, Badge,
-        Avatar, Toggle, Dialog. Everything else was a composition of these.
+        <strong>Identify patterns.</strong> Most components fell into categories: Button, Alert, Sidebar, Tabs.
+        These are the components Ralfy actually uses across its surfaces.
       </li>
       <li>
         <strong>Extract tokens first.</strong> Before touching components, I defined the token layer &mdash;
@@ -417,9 +417,9 @@
 
     <p><strong>Primitive tokens</strong> define raw OKLch color values:</p>
 
-<pre><code class="language-css">--zinc-50: oklch(0.985 0.002 247.858);
---zinc-900: oklch(0.274 0.006 286.033);
---red-600: oklch(0.577 0.245 27.325);</code></pre>
+<pre><code class="language-css">--zinc-50: oklch(0.9851 0 0);
+--zinc-900: oklch(0.2103 0.0059 285.9);
+--red-600: oklch(0.5771 0.2152 27.3);</code></pre>
 
     <p><strong>Semantic tokens</strong> assign roles by referencing primitives:</p>
 
@@ -535,15 +535,15 @@
     <h2>Production Integration</h2>
 
     <p>
-      Ralfy-UI isn't a standalone demo. I installed it as a dependency in the production Ralfy application
-      and imported the generated CSS files &mdash; <code>primitives.css</code>, <code>light.css</code>,
-      <code>dark.css</code> &mdash; into the app's <code>theme.css</code>. The existing theme now
-      references design system tokens instead of maintaining its own color definitions.
+      Ralfy-UI isn't a standalone demo. I installed it as a dependency in the production Ralfy application.
+      The library ships a <code>styles.css</code> entry point that bundles the token imports and Tailwind
+      <code>@source</code> / <code>@theme inline</code> mappings &mdash; consumers add a single
+      <code>@import 'ralfy-ui/styles.css'</code> to their CSS.
     </p>
 
     <ul>
       <li>
-        Replaced <strong>~30 hardcoded oklch values</strong> in the production <code>:root</code> and
+        Replaced hardcoded oklch values in the production <code>:root</code> and
         <code>.dark</code> blocks with <code>var()</code> references to ralfy-ui tokens
       </li>
       <li>
@@ -551,8 +551,7 @@
         <code>hsl()</code> functions in a <code>pulse-success</code> animation
       </li>
       <li>
-        Verified <strong>167/167 CSS variable references</strong> resolve correctly across both light and
-        dark modes
+        Verified all CSS variable references resolve correctly across both light and dark modes
       </li>
     </ul>
 
@@ -567,12 +566,12 @@
 
     <p>
       With the token system in place, I audited the production UI for inconsistencies &mdash; places where
-      hardcoded values had drifted from the intended design. Across 6 components, I found
-      <strong>~42 hardcoded color declarations</strong> &mdash; inconsistent backgrounds, mismatched hover
+      hardcoded values had drifted from the intended design. Across multiple components, I found
+      dozens of hardcoded color declarations &mdash; inconsistent backgrounds, mismatched hover
       states, raw hex values where semantic tokens should have been. After the audit,
-      those 42 declarations became <strong>~13 theme token references</strong>, with standardized spacing
-      and hover patterns. The design system didn't just prevent future drift; it revealed problems that had
-      been invisible without a single source of truth.
+      those scattered declarations collapsed into a handful of theme token references, with standardized
+      spacing and hover patterns. The design system didn't just prevent future drift; it revealed problems
+      that had been invisible without a single source of truth.
     </p>
 
     <hr>
@@ -641,10 +640,9 @@
     <h3>What I Built</h3>
 
     <p>
-      Button is the reference implementation &mdash; fully rebuilt from Figma with tests, autodocs,
-      and AllVariants stories in Storybook. It demonstrates the full workflow. The remaining components
-      are built and used in production; Storybook documentation is being added as each one goes through
-      the Figma-to-component workflow.
+      Five components, each rebuilt from Figma with tests, autodocs, and AllVariants stories in Storybook.
+      Button was the reference implementation that established the workflow; the others followed the same
+      pattern.
     </p>
 
     <table>
@@ -662,34 +660,24 @@
           <td>Eliminates "ButtonLink" anti-pattern</td>
         </tr>
         <tr>
-          <td><strong>Input</strong></td>
-          <td>Native <code>&lt;input&gt;</code> with label, helper text, error state, icon. <code>aria-describedby</code> links errors to input.</td>
-          <td>Accessible error handling</td>
+          <td><strong>Alert</strong></td>
+          <td>Semantic variants (info, success, warning, error) with <code>role="alert"</code>. Icon and close button support.</td>
+          <td>Accessible status communication</td>
         </tr>
         <tr>
-          <td><strong>Card</strong></td>
-          <td>Compound component &mdash; independent sub-components compose freely. Three variants.</td>
-          <td>Avoids the 15-prop god-component</td>
+          <td><strong>Sidebar</strong></td>
+          <td>Compound component &mdash; Brand, Menu, Item, Group, Separator compose freely. Collapsed mode, side variants.</td>
+          <td>Flexible navigation structure</td>
         </tr>
         <tr>
-          <td><strong>Badge</strong></td>
-          <td>Semantic variants (success, warning, error, info). Meaning encoded in variant name.</td>
-          <td>Color-as-communication</td>
+          <td><strong>Tabs</strong></td>
+          <td>Radix Tabs &mdash; keyboard navigation, <code>aria-selected</code>, content panels. Compound pattern.</td>
+          <td>Accessible tabbed navigation</td>
         </tr>
         <tr>
-          <td><strong>Avatar</strong></td>
-          <td>Radix Avatar handles image loading, error fallback, initials. Status indicator.</td>
-          <td>Edge cases handled by Radix</td>
-        </tr>
-        <tr>
-          <td><strong>Toggle</strong></td>
-          <td>Radix Switch &mdash; keyboard navigation, <code>aria-checked</code>, focus management.</td>
-          <td>Accessibility built-in</td>
-        </tr>
-        <tr>
-          <td><strong>Dialog</strong></td>
-          <td>Radix Dialog &mdash; compound pattern, overlay, close button, compound sub-components.</td>
-          <td>Accessible modal pattern</td>
+          <td><strong>TabItem</strong></td>
+          <td>Standalone tab trigger with icon support. Three sizes, active state styling.</td>
+          <td>Reusable outside Tabs compound</td>
         </tr>
       </tbody>
     </table>
@@ -746,10 +734,11 @@
     </p>
 
     <p>
-      Beyond <code>CLAUDE.md</code>, the project includes a <code>figma-to-component</code> skill &mdash; a
+      Beyond <code>CLAUDE.md</code>, I created a <code>figma-to-component</code> Claude Code skill &mdash; a
       codified workflow that reads a Figma design via MCP, maps tokens, generates a React component with
-      <code>cva</code> variants, creates Storybook stories with autodocs, and verifies the build. This turns
-      "build a component from Figma" from a multi-hour manual process into a repeatable, AI-assisted workflow.
+      <code>cva</code> variants, creates Storybook stories with autodocs, and verifies the build. The skill
+      lives in my local Claude Code configuration and turns "build a component from Figma" from a multi-hour
+      manual process into a repeatable, AI-assisted workflow.
     </p>
 
     <hr>
@@ -768,8 +757,8 @@
       <strong>For engineers:</strong> Button's AllVariants story shows every variant &times; size &times; state
       combination in one view &mdash; matching the Figma component sheet. Individual stories have interactive
       controls (variant, size, loading, disabled) for testing combinations. Additional components &mdash; Alert,
-      Sidebar, Tabs &mdash; have their own story suites. Deployed on
-      <a href="https://6999e35613453c9b648d640e-albaloikgl.chromatic.com/" target="_blank" rel="noopener noreferrer">Chromatic</a> with a shareable
+      Sidebar, Tabs, TabItem &mdash; have their own story suites. Deployed on
+      <a href="https://6999e35613453c9b648d640e-iwtddknqko.chromatic.com/" target="_blank" rel="noopener noreferrer">Chromatic</a> with a shareable
       URL &mdash; no local setup needed.
     </p>
 

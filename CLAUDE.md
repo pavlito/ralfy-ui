@@ -61,8 +61,8 @@ Tailwind class names mirror Figma token names directly (no alias layer). The pat
 
 ### Spacing
 Use Tailwind's spacing utilities. Custom tokens available as CSS variables:
-- `--spacing-xs`: 4px | `--spacing-sm`: 8px | `--spacing-md`: 16px
-- `--spacing-lg`: 24px | `--spacing-xl`: 32px | `--spacing-2xl`: 48px | `--spacing-3xl`: 64px
+- `--spacing-xxs`: 2px | `--spacing-xs`: 4px | `--spacing-sm`: 8px | `--spacing-md`: 12px
+- `--spacing-lg`: 16px | `--spacing-xl`: 24px | `--spacing-xxl`: 32px | `--spacing-3xl`: 40px | `--spacing-4xl`: 64px
 
 ### Typography
 - Font: Inter (loaded via Google Fonts in index.html)
