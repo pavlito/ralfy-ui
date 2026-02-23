@@ -83,14 +83,17 @@ Import from `@/components/[ComponentName]`:
 ```tsx
 import { Button } from '@/components/Button'
 
-<Button variant="primary" size="md">Label</Button>
+<Button variant="default" size="md">Label</Button>
 <Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="destructive">Delete</Button>
+<Button variant="link">Link</Button>
 <Button loading>Loading...</Button>
+<Button iconLeft={<PlusIcon />}>Add Item</Button>
 <Button asChild><a href="/link">Link</a></Button>
 ```
-Props: `variant` (primary|secondary|ghost|destructive), `size` (sm|md|lg), `loading`, `disabled`, `asChild`
+Props: `variant` (default|secondary|destructive|outline|ghost|link), `size` (sm|md|lg|icon), `loading`, `disabled`, `iconLeft`, `iconRight`, `asChild`
 
 ### Alert (Compound)
 ```tsx
@@ -150,8 +153,9 @@ Built on Radix Tabs. Sub-components: Tabs (Root), TabsList, TabsTrigger, TabsCon
 import { TabItem } from '@/components/TabItem'
 
 <TabItem active size="sm">Tab Label</TabItem>
+<TabItem icon={<StarIcon />}>With Icon</TabItem>
 ```
-Props: `active`, `size` (sm|md|lg), `disabled`
+Props: `active`, `size` (sm|md|lg), `icon`, `disabled`
 
 ## Patterns
 
