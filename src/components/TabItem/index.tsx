@@ -28,18 +28,23 @@ export interface TabItemProps
     Omit<VariantProps<typeof tabItemVariants>, 'active'> {
   /** Whether this tab item is currently active/selected. */
   active?: boolean
+  /** Icon element rendered before the label. */
+  icon?: React.ReactNode
 }
 
 const TabItem = React.forwardRef<HTMLButtonElement, TabItemProps>(
-  ({ className, size, active = false, ...props }, ref) => {
+  ({ className, size, active = false, icon, children, ...props }, ref) => {
     return (
       <button
-        className={cn(tabItemVariants({ size, active, className }))}
+        className={cn(tabItemVariants({ size, active }), icon && 'gap-[var(--spacing-xs)]', className)}
         ref={ref}
         role="tab"
         aria-selected={active}
         {...props}
-      />
+      >
+        {icon && <span className="inline-flex shrink-0">{icon}</span>}
+        {children}
+      </button>
     )
   },
 )

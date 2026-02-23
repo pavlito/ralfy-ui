@@ -354,9 +354,9 @@
     <!-- 1. Hero -->
     <header class="hero">
 
-      <h1>One Token Change Updates Everything</h1>
+      <h1>From Figma to Production in One Workflow</h1>
       <p class="subtitle">
-        A design system with custom AI workflows. From Figma tokens to production components.
+        Components that work on every screen. A workflow that works for every engineer.
       </p>
 
       <!-- Pipeline cards + App preview hero -->
@@ -520,15 +520,14 @@
     <h2>The Problem</h2>
 
     <p>
-      The UI got inconsistent. Components were built one-off with hardcoded colors.
-      Spacing varied across pages. Nothing shared, nothing reusable.
+      Every component was built differently. Four screens, four button styles.
+      Tabs built three ways. No shared patterns, no shared tokens, no reusable parts.
     </p>
 
     <p>
-      There was <strong>no single source of truth</strong>. Some colors were hardcoded oklch values.
-      Others used CSS variables but duplicated under different names for the same role.
+      There was <strong>no single source of truth</strong>. Colors were hardcoded oklch values
+      or CSS variables duplicated under different names for the same role.
       Changing the primary color meant searching the codebase and hoping I found every instance.
-      Some of this is still being cleaned up.
     </p>
 
     <!-- 4 buttons in 2x2 grid — same actions, different styles -->
@@ -560,6 +559,42 @@
     </div>
 
     <img src="theme-before.png" alt="CSS theme file with hardcoded oklch values, mixed hex colors, and annotated inconsistencies" style="width:100%;border-radius:12px;margin:24px 0;">
+
+    <!-- Before/After: Production CSS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;border:1px solid #27272a;margin:24px 0;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;background:#0c0c0c;white-space:nowrap;overflow-x:auto;">
+      <!-- Before -->
+      <div style="border-right:1px solid #27272a;padding:16px 20px;">
+        <div style="margin-bottom:8px;"><span style="font-size:9px;color:#ef4444;background:rgba(239,68,68,0.1);padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:0.04em;">Before</span> <span style="color:#3f3f46;margin-left:6px;">globals.css</span></div>
+        <div style="color:#52525b;">/* Hardcoded production colors */</div>
+        <div><span style="color:#a1a1aa;">:root</span> <span style="color:#52525b;">{</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-bg:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-hover:</span> <span style="color:#ef4444;">oklch(0.27 0.005 286)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-primary:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-hover:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286 / 0.8)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--card-border:</span> <span style="color:#ef4444;">oklch(0.87 0.007 286)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--text-muted:</span> <span style="color:#ef4444;">oklch(0.55 0.014 286)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--danger-bg:</span> <span style="color:#ef4444;">oklch(0.58 0.22 27.3)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--success-bg:</span> <span style="color:#ef4444;">oklch(0.60 0.13 163)</span><span style="color:#52525b;">;</span></div>
+        <div><span style="color:#52525b;">}</span></div>
+        <div style="color:#3f3f46;">/* 47 more hardcoded values... */</div>
+      </div>
+      <!-- After -->
+      <div style="padding:16px 20px;">
+        <div style="margin-bottom:8px;"><span style="font-size:9px;color:#4ade80;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:0.04em;">After</span> <span style="color:#3f3f46;margin-left:6px;">globals.css</span></div>
+        <div style="color:#52525b;">/* Token references from ralfy-ui */</div>
+        <div><span style="color:#a1a1aa;">@import</span> '<span style="color:#4ade80;">ralfy-ui/tokens</span>'<span style="color:#52525b;">;</span></div>
+        <div style="margin-top:4px;"><span style="color:#a1a1aa;">:root</span> <span style="color:#52525b;">{</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-bg:</span> <span style="color:#4ade80;">var(--bg-primary-default)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-hover:</span> <span style="color:#4ade80;">var(--bg-primary-default-hover)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-primary:</span> <span style="color:#4ade80;">var(--bg-primary-default)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-hover:</span> <span style="color:#4ade80;">var(--bg-primary-default-hover)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--card-border:</span> <span style="color:#4ade80;">var(--border-default)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--text-muted:</span> <span style="color:#4ade80;">var(--foreground-muted)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--danger-bg:</span> <span style="color:#4ade80;">var(--bg-destructive-default)</span><span style="color:#52525b;">;</span></div>
+        <div style="padding-left:16px;"><span style="color:#71717a;">--success-bg:</span> <span style="color:#4ade80;">var(--bg-success-default)</span><span style="color:#52525b;">;</span></div>
+        <div><span style="color:#52525b;">}</span></div>
+      </div>
+    </div>
 
     <p>
       I needed guardrails. Not just components, but a <strong>system that prevents this drift</strong>
@@ -708,59 +743,32 @@
         No bundle overhead. Tree-shakeable exports.
       </li>
     </ul>
-    </div>
-    </div>
 
-    <!-- 5. The System -->
-    <h2>The System</h2>
-
-    <h3>Token Architecture</h3>
-
-    <p>Two tiers. Primitives hold raw color values. Semantic tokens assign roles.</p>
-
-    <p><strong>Primitives</strong> are raw OKLch values:</p>
-
-<pre><code class="language-css">--zinc-50: oklch(0.9851 0 0);
---zinc-900: oklch(0.2103 0.0059 285.9);
---red-600: oklch(0.5771 0.2152 27.3);</code></pre>
-
-    <p><strong>Semantic tokens</strong> reference primitives:</p>
-
-<pre><code class="language-css">--background-primary-default: var(--primary-900);
---foreground-default: var(--zinc-950);
---border-default: var(--zinc-200);</code></pre>
+    <h3 style="color:#fafafa;">Token Architecture</h3>
 
     <p>
-      Components only use semantic tokens. Swap the primitives and every component
-      updates. No code changes needed.
+      Semantic tokens reference primitives. Components only use semantic tokens.
+      Swap the primitives and every component updates. No code changes needed.
     </p>
+
+<pre style="margin:0 0 24px;border-radius:8px;overflow-x:auto;"><code class="language-css" style="background:none;padding:0;border-radius:0;font-size:13px !important;line-height:1.5;">--background-primary-default: var(--primary-900);
+--foreground-default: var(--zinc-950);
+--border-default: var(--zinc-200);</code></pre>
 
     <img src="tokens-studio.png" alt="Tokens Studio for Figma showing token sets (Light, Dark, Primitives) with semantic color tokens (Secondary, Destructive, Success, Warning, Disabled) and number tokens (Spacing, Padding, Radius)" style="width:100%;border-radius:12px;margin:24px 0;">
 
     <video src="toggle-dark-mode.mp4" autoplay loop muted playsinline style="width:100%;border-radius:12px;margin:24px 0;"></video>
 
-    <h3>CSS Distribution</h3>
-
     <p>
-      This was the hardest problem in the sprint. After linking the package, the consuming
-      app couldn't find any styles. <strong>Tailwind v4 resolves <code>@source</code> paths
-      from external packages differently</strong> than local files. It skipped the
-      package entirely.
+      CSS distribution was the hardest problem. Tailwind v4 resolves <code style="background:rgba(255,255,255,0.1);color:#e4e4e7;">@source</code> paths from external packages differently.
+      The fix: a dedicated <code style="background:rgba(255,255,255,0.1);color:#e4e4e7;">styles.css</code> entry point that bundles token imports and <code style="background:rgba(255,255,255,0.1);color:#e4e4e7;">@theme inline</code> mappings. One import. Done.
     </p>
 
-    <p>
-      I tried <code>@source</code> into <code>node_modules</code>. Tried manual class safelists.
-      Tried pre-built CSS bundles. None worked cleanly.
-      The fix was a dedicated <code>styles.css</code> entry point that bundles
-      token imports and <code>@theme inline</code> mappings together. One import. Done.
-    </p>
+    </div>
+    </div>
 
-    <p>
-      If the setup is painful, nobody uses the system. This had to be simple.
-    </p>
-
-    <!-- 6. Components + Workflow -->
-    <h2>Components + Workflow</h2>
+    <!-- 5. Components -->
+    <h2>Components</h2>
 
     <h3>Figma to Storybook</h3>
 
@@ -787,24 +795,24 @@
       </li>
     </ol>
 
-    <h3>Storybook to Production</h3>
+    <h3>Component Deep Dive: Tabs</h3>
 
     <p>
-      Using the system should be simple. A developer needs three lines:
+      The production app had tabs built three different ways. Same concept, different code.
+      One used divs with onClick. Another had custom keyboard handling. A third skipped focus states entirely.
     </p>
 
-<pre><code class="language-tsx">// 1. CSS (once, in your app's entry point)
-@import 'ralfy-ui/styles.css';
-
-// 2. Use
-import { Button } from 'ralfy-ui';
-
-&lt;Button variant="primary" size="md"&gt;Save&lt;/Button&gt;</code></pre>
+    <img src="ui-audit-tabs.png" alt="UI audit showing three different tab implementations across the Ralfy production app" style="width:100%;border-radius:12px;margin:24px 0;">
 
     <p>
-      Tokens, dark mode, and styles come through automatically.
-      No setup. No theme config. No extra CSS imports.
-      Changes hot reload in Storybook for fast visual checks.
+      Tabs is built on Radix Tabs. Arrow-key navigation, <code>aria-selected</code>, roving tabindex —
+      all handled by the primitive. I wrote zero keyboard logic. Zero ARIA attributes by hand.
+      I focused on the tokens and variants that make it look right in the system.
+    </p>
+
+    <p>
+      One component. Every screen that needs tabs gets the same behavior,
+      the same keyboard nav, and the same visual treatment.
     </p>
 
     <video src="tabs-storybook-to-production.mp4" autoplay loop muted playsinline style="width:100%;border-radius:12px;margin:24px 0;"></video>
@@ -835,7 +843,7 @@ import { Button } from 'ralfy-ui';
         <tr>
           <td><strong>Sidebar</strong></td>
           <td>Compound: Brand, Menu, Item, Group, Separator. Collapsed mode.</td>
-          <td>Compound architecture scales (13 sub-components compose freely)</td>
+          <td>Compound architecture scales (16 sub-components compose freely)</td>
         </tr>
         <tr>
           <td><strong>Tabs</strong></td>
@@ -849,6 +857,26 @@ import { Button } from 'ralfy-ui';
         </tr>
       </tbody>
     </table>
+
+    <h3>Storybook to Production</h3>
+
+    <p>
+      Using the system should be simple. A developer needs three lines:
+    </p>
+
+<pre><code class="language-tsx">// 1. CSS (once, in your app's entry point)
+@import 'ralfy-ui/styles.css';
+
+// 2. Use
+import { Button } from 'ralfy-ui';
+
+&lt;Button variant="primary" size="md"&gt;Save&lt;/Button&gt;</code></pre>
+
+    <p>
+      Tokens, dark mode, and styles come through automatically.
+      No setup. No theme config. No extra CSS imports.
+      Changes hot reload in Storybook for fast visual checks.
+    </p>
 
     <video src="storybook-components.mp4" autoplay loop muted playsinline style="width:100%;border-radius:12px;margin:24px 0;"></video>
 
@@ -906,7 +934,7 @@ import { Button } from 'ralfy-ui';
         <div style="color:#52525b;padding-left:18px;">Read design via MCP → extract tokens → map to Tailwind → generate component</div>
 
         <div style="margin-top:8px;"><span style="color:#71717a;">$</span> <span style="color:#60a5fa;">build-component</span> <span style="color:#a1a1aa;">Sidebar --compound</span></div>
-        <div style="color:#52525b;padding-left:18px;">13 sub-components · cva + forwardRef · Storybook stories + autodocs</div>
+        <div style="color:#52525b;padding-left:18px;">16 sub-components · cva + forwardRef · Storybook stories + autodocs</div>
 
         <div style="margin-top:8px;"><span style="color:#71717a;">$</span> <span style="color:#60a5fa;">ralfy-testing</span></div>
         <div style="color:#52525b;padding-left:18px;">Generate scenarios → happy path + edge cases → run vitest → <span style="color:#4ade80;">63 passing</span></div>
@@ -923,15 +951,21 @@ import { Button } from 'ralfy-ui';
     <!-- 7. Results -->
     <h2>Results</h2>
 
-    <div class="media-placeholder video">
-      <span class="type-tag">Screen Recording</span>
-      <div class="label">One Token Change Updates Everything</div>
-      <div class="hint">10s: Change token value &rarr; pnpm tokens:build &rarr; Storybook and production update. No code touched.</div>
-    </div>
+    <h3>Buttons</h3>
+    <img src="before-after-buttons.png" alt="Before: 4 different button styles across files. After: 4 consistent Button variants from ralfy-ui" style="width:100%;border-radius:12px;margin:24px 0;">
+
+    <h3>Colors</h3>
+    <img src="before-after-colors.png" alt="Before: hardcoded color values (zinc-800, hex, stone-900, indigo-950). After: semantic design tokens (bg-background-muted, bg-background-card, bg-background-primary-default)" style="width:100%;border-radius:12px;margin:24px 0;">
+
+    <h3>Alerts</h3>
+    <img src="before-after-alerts.png" alt="Before: 3 different alert patterns with inconsistent styling. After: 4 consistent Alert variants from ralfy-ui with proper icons" style="width:100%;border-radius:12px;margin:24px 0;">
+
+    <h3>Tabs</h3>
+    <img src="before-after-tabs.png" alt="Before: 3 different tab patterns (pill, underline, rounded). After: 3 identical Tabs components from ralfy-ui" style="width:100%;border-radius:12px;margin:24px 0;">
 
     <p>
       Built in <strong>2 days</strong>: 5 components from Figma, 63 tests, Chromatic deploy,
-      single-import setup (<code>@import 'ralfy-ui/styles.css'</code>), production integration verified.
+      and a repeatable workflow from design to production.
     </p>
 
     <p><strong>What this enables:</strong></p>
@@ -941,48 +975,6 @@ import { Button } from 'ralfy-ui';
       <li>New developer onboarding: one file (CLAUDE.md) instead of tribal knowledge about which classes to use.</li>
       <li>Adding a component: repeatable workflow, not a from-scratch effort each time.</li>
     </ul>
-
-    <!-- Before/After: Production CSS -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;border:1px solid #27272a;margin:24px 0;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;background:#0c0c0c;white-space:nowrap;overflow-x:auto;">
-      <!-- Before -->
-      <div style="border-right:1px solid #27272a;padding:16px 20px;">
-        <div style="margin-bottom:8px;"><span style="font-size:9px;color:#ef4444;background:rgba(239,68,68,0.1);padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:0.04em;">Before</span> <span style="color:#3f3f46;margin-left:6px;">globals.css</span></div>
-        <div style="color:#52525b;">/* Hardcoded production colors */</div>
-        <div><span style="color:#a1a1aa;">:root</span> <span style="color:#52525b;">{</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-bg:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-hover:</span> <span style="color:#ef4444;">oklch(0.27 0.005 286)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-primary:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-hover:</span> <span style="color:#ef4444;">oklch(0.21 0.006 286 / 0.8)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--card-border:</span> <span style="color:#ef4444;">oklch(0.87 0.007 286)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--text-muted:</span> <span style="color:#ef4444;">oklch(0.55 0.014 286)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--danger-bg:</span> <span style="color:#ef4444;">oklch(0.58 0.22 27.3)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--success-bg:</span> <span style="color:#ef4444;">oklch(0.60 0.13 163)</span><span style="color:#52525b;">;</span></div>
-        <div><span style="color:#52525b;">}</span></div>
-        <div style="color:#3f3f46;">/* 47 more hardcoded values... */</div>
-      </div>
-      <!-- After -->
-      <div style="padding:16px 20px;">
-        <div style="margin-bottom:8px;"><span style="font-size:9px;color:#4ade80;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:0.04em;">After</span> <span style="color:#3f3f46;margin-left:6px;">globals.css</span></div>
-        <div style="color:#52525b;">/* Token references from ralfy-ui */</div>
-        <div><span style="color:#a1a1aa;">@import</span> '<span style="color:#4ade80;">ralfy-ui/tokens</span>'<span style="color:#52525b;">;</span></div>
-        <div style="margin-top:4px;"><span style="color:#a1a1aa;">:root</span> <span style="color:#52525b;">{</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-bg:</span> <span style="color:#4ade80;">var(--bg-primary-default)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--sidebar-hover:</span> <span style="color:#4ade80;">var(--bg-primary-default-hover)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-primary:</span> <span style="color:#4ade80;">var(--bg-primary-default)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--btn-hover:</span> <span style="color:#4ade80;">var(--bg-primary-default-hover)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--card-border:</span> <span style="color:#4ade80;">var(--border-default)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--text-muted:</span> <span style="color:#4ade80;">var(--foreground-muted)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--danger-bg:</span> <span style="color:#4ade80;">var(--bg-destructive-default)</span><span style="color:#52525b;">;</span></div>
-        <div style="padding-left:16px;"><span style="color:#71717a;">--success-bg:</span> <span style="color:#4ade80;">var(--bg-success-default)</span><span style="color:#52525b;">;</span></div>
-        <div><span style="color:#52525b;">}</span></div>
-      </div>
-    </div>
-
-    <p>
-      A UI audit of the production app found the kind of drift that builds up without a system.
-      Hardcoded oklch values, duplicate grays, hover states using raw color math.
-      The token system didn't just prevent future drift. It made existing drift visible.
-    </p>
 
     <h3>What's Next</h3>
 

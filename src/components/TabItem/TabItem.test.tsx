@@ -56,4 +56,16 @@ describe('TabItem', () => {
     render(<TabItem ref={ref}>Ref</TabItem>)
     expect(ref).toHaveBeenCalled()
   })
+
+  it('renders icon before label', () => {
+    render(<TabItem icon={<svg data-testid="icon" />}>With Icon</TabItem>)
+    const tab = screen.getByRole('tab')
+    expect(tab.querySelector('[data-testid="icon"]')).toBeInTheDocument()
+  })
+
+  it('does not render icon wrapper when no icon', () => {
+    render(<TabItem>No Icon</TabItem>)
+    const tab = screen.getByRole('tab')
+    expect(tab.querySelector('span')).not.toBeInTheDocument()
+  })
 })
