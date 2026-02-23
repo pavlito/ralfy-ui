@@ -66,18 +66,19 @@ Tailwind class names mirror Figma token names directly (no alias layer). The pat
 | Primary icon | `text-icon-primary-default` |
 | Secondary icon | `text-icon-secondary-default` |
 | Destructive icon | `text-icon-destructive-default` |
+| Destructive icon on destructive bg | `text-icon-destructive-on-destructive` |
 | Success icon | `text-icon-success-default` |
 | Warning icon | `text-icon-warning-default` |
 | Disabled icon | `text-icon-disabled-default` |
 
 ### Spacing
 Use Tailwind's spacing utilities. Custom tokens available as CSS variables:
-- `--spacing-xxs`: 2px | `--spacing-xs`: 4px | `--spacing-sm`: 8px | `--spacing-md`: 12px
+- `--spacing-none`: 0 | `--spacing-xxs`: 2px | `--spacing-xs`: 4px | `--spacing-sm`: 8px | `--spacing-md`: 12px
 - `--spacing-lg`: 16px | `--spacing-xl`: 24px | `--spacing-xxl`: 32px | `--spacing-3xl`: 40px | `--spacing-4xl`: 64px
 
 ### Padding
 Padding tokens have different values from spacing tokens. Components use these for internal padding:
-- `--padding-xxs`: 8px | `--padding-xs`: 12px | `--padding-sm`: 16px | `--padding-md`: 20px
+- `--padding-none`: 0 | `--padding-xxs`: 8px | `--padding-xs`: 12px | `--padding-sm`: 16px | `--padding-md`: 20px
 - `--padding-lg`: 24px | `--padding-xl`: 32px | `--padding-xxl`: 40px | `--padding-3xl`: 48px | `--padding-4xl`: 64px
 
 ### Typography
@@ -89,7 +90,8 @@ Padding tokens have different values from spacing tokens. Components use these f
 - `shadow-sm` | `shadow-md` | `shadow-lg` | `shadow-xl`
 
 ### Border Radius
-- `rounded-sm` | `rounded-md` | `rounded-lg` | `rounded-xl`
+- `rounded-none` (0) | `rounded-xs` (2px) | `rounded-sm` (4px) | `rounded-md` (8px)
+- `rounded-lg` (12px) | `rounded-xl` (16px) | `rounded-xxl` (24px) | `rounded-full` (400px)
 
 ## Components
 
