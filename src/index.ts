@@ -23,7 +23,7 @@ export {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from './components/Sidebar'
-export type { SidebarSize, SidebarProps, SidebarMenuButtonProps, SidebarBrandProps } from './components/Sidebar'
+export type { SidebarSize, SidebarProps, SidebarMenuButtonProps, SidebarBrandProps, SidebarGroupLabelProps, SidebarMenuSubButtonProps } from './components/Sidebar'
 
 export { TabItem } from './components/TabItem'
 export type { TabItemProps } from './components/TabItem'

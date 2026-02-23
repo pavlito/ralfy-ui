@@ -18,11 +18,20 @@ Tailwind class names mirror Figma token names directly (no alias layer). The pat
 | Primary button | `bg-background-primary-default` |
 | Primary button hover | `hover:bg-background-primary-default-hover` |
 | Primary light surface | `bg-background-primary-light` |
+| Primary light hover | `hover:bg-background-primary-light-hover` |
 | Secondary button | `bg-background-secondary-default` |
 | Destructive button | `bg-background-destructive-default` |
+| Destructive hover | `hover:bg-background-destructive-default-hover` |
 | Destructive light surface | `bg-background-destructive-light` |
+| Destructive light hover | `hover:bg-background-destructive-light-hover` |
 | Success surface | `bg-background-success-default` |
+| Success hover | `hover:bg-background-success-default-hover` |
+| Success light surface | `bg-background-success-light` |
+| Success light hover | `hover:bg-background-success-light-hover` |
 | Warning surface | `bg-background-warning-default` |
+| Warning hover | `hover:bg-background-warning-default-hover` |
+| Warning light surface | `bg-background-warning-light` |
+| Warning light hover | `hover:bg-background-warning-light-hover` |
 | Disabled surface | `bg-background-disabled-default` |
 
 #### Text (foreground) colors
@@ -53,7 +62,9 @@ Tailwind class names mirror Figma token names directly (no alias layer). The pat
 |-------|---------------|
 | Default icon | `text-icon-default` |
 | Muted icon | `text-icon-muted` |
+| Accent icon | `text-icon-accent` |
 | Primary icon | `text-icon-primary-default` |
+| Secondary icon | `text-icon-secondary-default` |
 | Destructive icon | `text-icon-destructive-default` |
 | Success icon | `text-icon-success-default` |
 | Warning icon | `text-icon-warning-default` |
@@ -63,6 +74,11 @@ Tailwind class names mirror Figma token names directly (no alias layer). The pat
 Use Tailwind's spacing utilities. Custom tokens available as CSS variables:
 - `--spacing-xxs`: 2px | `--spacing-xs`: 4px | `--spacing-sm`: 8px | `--spacing-md`: 12px
 - `--spacing-lg`: 16px | `--spacing-xl`: 24px | `--spacing-xxl`: 32px | `--spacing-3xl`: 40px | `--spacing-4xl`: 64px
+
+### Padding
+Padding tokens have different values from spacing tokens. Components use these for internal padding:
+- `--padding-xxs`: 8px | `--padding-xs`: 12px | `--padding-sm`: 16px | `--padding-md`: 20px
+- `--padding-lg`: 24px | `--padding-xl`: 32px | `--padding-xxl`: 40px | `--padding-3xl`: 48px | `--padding-4xl`: 64px
 
 ### Typography
 - Font: Inter (loaded via Google Fonts in index.html)
@@ -133,6 +149,12 @@ import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, Si
 Props: `side` (left|right), `collapsed`
 Sub-components: SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, SidebarSeparator, SidebarBrand
 
+Key sub-component props:
+- **SidebarMenuButton**: `icon`, `active`, `size` (sm|md|lg), `shortcut`, `rightIcon`, `showLeftChevron`, `leftChevron`, `disabled`
+- **SidebarBrand**: `icon`, `title`, `description`, `trailing`, `size` (sm|md|lg), `active`
+- **SidebarGroupLabel**: `size` (sm|md|lg)
+- **SidebarMenuSubButton**: `size` (sm|md|lg), `active`
+
 ### Tabs (Compound)
 ```tsx
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs'
@@ -146,7 +168,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs'
   <TabsContent value="tab2">Content 2</TabsContent>
 </Tabs>
 ```
-Built on Radix Tabs. Sub-components: Tabs (Root), TabsList, TabsTrigger, TabsContent
+Built on Radix Tabs. Sub-components: Tabs (Root), TabsList, TabsTrigger (`size` sm|md|lg), TabsContent
 
 ### TabItem
 ```tsx
@@ -196,10 +218,11 @@ import { cn } from '@/lib/cn'
 ```
 src/
 ├── components/     # React components (Button/, Alert/, Sidebar/, TabItem/, Tabs/)
-├── tokens/         # Design tokens (tokens.css, colors.ts, spacing.ts, etc.)
+├── tokens/         # Design tokens (tokens.css, generated/*.css)
+├── styles.css      # Global styles entry point
 ├── lib/            # Utilities (cn.ts)
 ├── test/           # Test setup
-└── index.ts        # Public API exports
+└── index.ts        # Public API exports (components + cn utility)
 ```
 
 ## Commands
@@ -208,9 +231,11 @@ src/
 - `pnpm test` — Vitest watch mode
 - `pnpm test:run` — Vitest single run
 - `pnpm typecheck` — TypeScript check
+- `pnpm lint` — ESLint
 - `pnpm build` — Production build
 - `pnpm build-storybook` — Build Storybook static
 - `pnpm chromatic` — Deploy to Chromatic
+- `pnpm tokens:build` — Regenerate CSS from tokens.json (Style Dictionary)
 
 ## Rules
 - Never hardcode colors — use token classes
