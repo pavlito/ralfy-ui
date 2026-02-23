@@ -3,7 +3,7 @@ dist
 .DS_Store
 storybook-static
 .env
-docs/cover-letter-draft.md
+docs/
 .tokens-tmp
 build-storybook.log
 claude-talk-to-figma-mcp/
