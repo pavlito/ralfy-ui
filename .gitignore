@@ -3,7 +3,9 @@ dist
 .DS_Store
 storybook-static
 .env
+.claude/
 docs/
+logos.svg
 .tokens-tmp
 build-storybook.log
 claude-talk-to-figma-mcp/
