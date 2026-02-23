@@ -4,7 +4,8 @@ dist
 storybook-static
 .env
 .claude/
-docs/
+docs/*
+!docs/case-study/
 logos.svg
 .tokens-tmp
 build-storybook.log
