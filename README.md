@@ -2,7 +2,7 @@
 
 A design system extracted from a production React application, built to demonstrate how token-driven component architecture reduces engineering time and eliminates design-to-code drift.
 
-> **Live Storybook:** [Browse Components on Chromatic](https://6999e35613453c9b648d640e-iwtddknqko.chromatic.com/)
+> **Live Storybook:** [Browse Components on Chromatic](https://6999e35613453c9b648d640e-mgxwocxwlb.chromatic.com/)
 
 ## Why This Exists
 
@@ -73,7 +73,7 @@ pnpm typecheck     # TypeScript check
 
 ## AI-Ready
 
-This design system includes a `CLAUDE.md` file — a machine-readable specification that enables AI tools (like Claude Code) to generate compliant UI code automatically.
+This design system includes a [`CLAUDE.md`](CLAUDE.md) file — a machine-readable specification that enables AI tools (like Claude Code) to generate compliant UI code automatically.
 
 **What this means in practice:** When an AI reads CLAUDE.md before generating code, it uses the correct tokens, imports, and component APIs without manual review. This eliminates a category of "fix the AI output" work.
 
