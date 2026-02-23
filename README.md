@@ -38,28 +38,6 @@ Tier 2: Semantic      →  primary, muted, destructive
 
 All components use `React.forwardRef`, accept `className` for customization, and use only design tokens.
 
-### Sidebar Deep Dive
-
-The Sidebar is the most complex component, with 16 sub-components that compose together:
-
-```
-Sidebar (root)
-├── SidebarHeader / SidebarFooter
-├── SidebarContent
-│   └── SidebarGroup
-│       ├── SidebarGroupLabel (size variants)
-│       ├── SidebarGroupAction
-│       └── SidebarMenu
-│           └── SidebarMenuItem
-│               ├── SidebarMenuButton (size, active, disabled, icon, shortcut, rightIcon)
-│               ├── SidebarMenuAction (hover-reveal)
-│               └── SidebarMenuSub → SidebarMenuSubItem → SidebarMenuSubButton
-├── SidebarSeparator
-└── SidebarBrand (size, active, icon, title, description, trailing)
-```
-
-Features: CSS-only collapsed mode (`group-data-[collapsed]`), 3 size variants (sm/md/lg), Figma-matched focus ring, left/right placement.
-
 ### Tabs Deep Dive
 
 Tabs is built on Radix Tabs, providing full keyboard navigation and ARIA compliance out of the box:
